@@ -1,0 +1,23 @@
+package com.rev.app.service;
+
+import com.rev.app.entity.Order;
+import com.rev.app.entity.OrderItem;
+
+import java.util.List;
+
+public interface IOrderService {
+
+   
+    void placeOrder(Long userId);
+
+    
+    List<Order> getOrdersByUser(Long userId);
+
+    List<OrderItem> getOrderItems(Long orderId);
+
+ 
+    void updateOrderStatus(Long orderId, String status);
+
+    
+    void deleteOrder(Long orderId);
+}
