@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="container mt-5">
+
+<h2 class="mb-4 text-center">📦 My Orders</h2>
+
+<div th:each="order : ${orders}" class="card mb-4 shadow">
+
+    <div class="card-body">
+
+        <h5>Order ID:
+            <span th:text="${order.orderId}"></span>
+        </h5>
+
+        <p>Total: ₹
+            <span th:text="${order.totalAmount}"></span>
+        </p>
+
+        <p>Status:
+            <b th:text="${order.orderStatus}"></b>
+        </p>
+
+        <!-- VIEW DETAILS -->
+        <a th:href="@{'/orders/' + ${order.orderId}}"
+           class="btn btn-primary btn-sm">
+            View Details
+        </a>
+
+        <!-- UPDATE STATUS -->
+        <form action="/orders/update-status"
+              method="post"
+              class="mt-2">
+
+            <input type="hidden"
+                   name="orderId"
+                   th:value="${order.orderId}">
+
+            <select name="status"
+                    class="form-select w-50 d-inline">
+                <option>PLACED</option>
+                <option>SHIPPED</option>
+                <option>DELIVERED</option>
+            </select>
+
+            <button class="btn btn-success btn-sm">
+                Update
+            </button>
+        </form>
+
+        <!-- DELETE -->
+        <a th:href="@{'/orders/delete/' + ${order.orderId}}"
+           class="btn btn-danger btn-sm mt-2">
+            Cancel Order
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

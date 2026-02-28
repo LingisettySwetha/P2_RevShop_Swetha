@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<div class="container">
+
+    <a class="navbar-brand fw-bold" href="/">🛒 RevShop</a>
+
+    <!-- Search -->
+    <form class="d-flex w-50">
+        <input class="form-control" placeholder="Search products">
+    </form>
+
+    <div>
+        <a class="btn btn-outline-light me-2" href="/products">Products</a>
+        <a class="btn btn-warning" href="/cart">Cart 🛒</a>
+    </div>
+
+</div>
+
+</nav>
+
+</body>
+</html>
