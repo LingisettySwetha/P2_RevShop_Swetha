@@ -99,4 +99,11 @@ public class OrderServiceImpl implements IOrderService {
     public void deleteOrder(Long orderId) {
         orderRepository.deleteById(orderId);
     }
+    
+    @Override
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId).orElse(null);
+    }
+
+    
 }

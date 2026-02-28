@@ -78,4 +78,23 @@ public class OrderController {
 
         return "redirect:/order-success";
     }
+    
+    @GetMapping("/orders/{orderId}/invoice")
+    public String invoice(@PathVariable Long orderId,
+                          HttpSession session,
+                          Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null)
+            return "redirect:/login";
+
+        model.addAttribute("order",
+                orderService.getOrderById(orderId));
+
+        model.addAttribute("items",
+                orderService.getOrderItems(orderId));
+
+        return "invoice";
+    }
 }

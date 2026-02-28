@@ -20,4 +20,8 @@ public interface IOrderService {
 
     
     void deleteOrder(Long orderId);
+    
+    Order getOrderById(Long orderId);
+
+    
 }
