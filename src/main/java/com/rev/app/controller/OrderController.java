@@ -65,4 +65,17 @@ public class OrderController {
 
         return "redirect:/orders";
     }
+    
+    @PostMapping("/orders/checkout")
+    public String checkout(HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null)
+            return "redirect:/login";
+
+        orderService.placeOrder(userId);
+
+        return "redirect:/order-success";
+    }
 }
