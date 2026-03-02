@@ -1,6 +1,7 @@
 package com.rev.app.controller;
 
 import com.rev.app.entity.Product;
+import com.rev.app.exception.UnauthorizedException;
 import com.rev.app.repository.ICategoryRepository;
 import com.rev.app.repository.IUserRepository;
 import com.rev.app.service.IProductService;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/admin/products")
 public class AdminProductController {
@@ -25,32 +28,30 @@ public class AdminProductController {
     @Autowired
     private ICategoryRepository categoryRepository;
 
-
- 
-    @GetMapping
-    public String listProducts(HttpSession session, Model model) {
-
+    private void checkAdmin(HttpSession session){
         String role = (String) session.getAttribute("role");
 
-       
-        if (role == null || !role.equals("ADMIN")) {
-            return "redirect:/login";
-        }
+        if (role == null || !role.equals("ADMIN"))
+            throw new UnauthorizedException("Admin access only");
+    }
 
-        model.addAttribute("products", productService.getAllProducts());
+    @GetMapping
+    public String listProducts(HttpSession session, Model model) {
+        log.info("Admin: Listing products");
+
+        checkAdmin(session);
+
+        model.addAttribute("products",
+                productService.getAllProducts());
+
         return "admin-products";
     }
 
-
- 
     @GetMapping("/add")
-    public String addProductPage(HttpSession session, Model model) {
+    public String addProductPage(HttpSession session,
+                                 Model model) {
 
-        String role = (String) session.getAttribute("role");
-
-        if (role == null || !role.equals("ADMIN")) {
-            return "redirect:/login";
-        }
+        checkAdmin(session);
 
         model.addAttribute("product", new Product());
         model.addAttribute("sellers", userRepository.findAll());
@@ -59,58 +60,38 @@ public class AdminProductController {
         return "add-product";
     }
 
-
-  
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute Product product,
                               HttpSession session) {
 
-        String role = (String) session.getAttribute("role");
-
-        if (role == null || !role.equals("ADMIN")) {
-            return "redirect:/login";
-        }
+        checkAdmin(session);
 
         productService.saveProduct(product);
         return "redirect:/admin/products";
     }
 
-
-   
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable Long id,
                               HttpSession session,
                               Model model) {
 
-        String role = (String) session.getAttribute("role");
-
-        if (role == null || !role.equals("ADMIN")) {
-            return "redirect:/login";
-        }
+        checkAdmin(session);
 
         model.addAttribute("product",
                 productService.getProductById(id));
-
         model.addAttribute("sellers",
                 userRepository.findAll());
-
         model.addAttribute("categories",
                 categoryRepository.findAll());
 
         return "edit-product";
     }
 
-
-   
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id,
                                 HttpSession session) {
 
-        String role = (String) session.getAttribute("role");
-
-        if (role == null || !role.equals("ADMIN")) {
-            return "redirect:/login";
-        }
+        checkAdmin(session);
 
         productService.deleteProduct(id);
         return "redirect:/admin/products";

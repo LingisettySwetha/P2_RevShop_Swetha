@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Seller Dashboard - RevShop</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .alert-badge {
+            background: #ef4444;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="navbar :: navbar"></div>
+
+    <main class="hero-section" style="padding-top: 4rem; text-align: left; max-width: 1200px; margin: 0 auto;">
+        <h1 class="hero-title">Seller <span style="font-weight: 300;">Dashboard</span></h1>
+
+        <div class="stats-grid">
+            <div class="glass-panel stat-card">
+                <div class="stat-value" th:text="${'₹' + #numbers.formatDecimal(totalRevenue, 1, 2)}">₹0.00</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="glass-panel stat-card">
+                <div class="stat-value" th:text="${products.size()}">0</div>
+                <div class="stat-label">Active Products</div>
+            </div>
+            <div class="glass-panel stat-card">
+                <div class="stat-value" th:text="${orders.size()}">0</div>
+                <div class="stat-label">Items Ordered</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>Inventory <span style="color: var(--text-secondary); font-weight: 300;">Status</span></h2>
+            <a th:href="@{/seller/products/add}" class="btn-premium">Add New Product</a>
+        </div>
+
+        <div class="glass-panel" style="margin-bottom: 3rem;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr
+                        style="text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--glass-border);">
+                        <th style="padding: 1rem;">Product</th>
+                        <th style="padding: 1rem;">Price</th>
+                        <th style="padding: 1rem;">Stock</th>
+                        <th style="padding: 1rem;">Status</th>
+                        <th style="padding: 1rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${products}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;" th:text="${p.name}">Product Name</td>
+                        <td style="padding: 1rem;" th:text="${'₹' + p.price}">₹0.00</td>
+                        <td style="padding: 1rem;" th:text="${p.quantity}">0</td>
+                        <td style="padding: 1rem;">
+                            <span th:if="${p.quantity < 5}" class="alert-badge">Low Stock</span>
+                            <span th:if="${p.quantity >= 5}" style="color: #10b981; font-weight: 600;">Optimal</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <a th:href="@{'/seller/products/edit/' + ${p.productId}}"
+                                style="color: var(--accent-cyan); text-decoration: none; margin-right: 1rem;">Edit</a>
+                            <a th:href="@{'/products/' + ${p.productId}}"
+                                style="color: #a855f7; text-decoration: none; margin-right: 1rem;">Reviews</a>
+                            <a th:href="@{'/seller/products/delete/' + ${p.productId}}"
+                                style="color: #ef4444; text-decoration: none;"
+                                onclick="return confirm('Delete this product?')">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-header">
+            <h2>Recent <span style="color: var(--text-secondary); font-weight: 300;">Orders</span></h2>
+            <a th:href="@{/seller/orders}" class="btn-ghost btn-premium">View All Orders</a>
+        </div>
+
+        <div class="grid-premium" style="padding: 0;">
+            <div th:each="o : ${orders}" class="card-premium" style="padding: 1.5rem;">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;"
+                    th:text="${#temporals.format(o.order.orderDate, 'dd MMM yyyy')}">Date</div>
+                <h3 th:text="${o.product.name}" style="margin-bottom: 1rem;">Product Name</h3>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Qty: <span th:text="${o.quantity}">1</span></span>
+                    <span style="font-weight: 700;" th:text="${'₹' + (o.price * o.quantity)}">Total</span>
+                </div>
+                <div
+                    style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); font-size: 0.9rem;">
+                    Status: <span th:text="${o.order.orderStatus}" style="color: var(--accent-cyan);">Status</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer style="padding: 4rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+        &copy; 2026 RevShop Seller Central. Built for Excellence.
+    </footer>
+</body>
+
+</html>

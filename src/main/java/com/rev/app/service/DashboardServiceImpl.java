@@ -7,7 +7,9 @@ import com.rev.app.service.IDashboardService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class DashboardServiceImpl implements IDashboardService {
 
@@ -22,6 +24,7 @@ public class DashboardServiceImpl implements IDashboardService {
 
     @Override
     public long totalUsers() {
+        log.info("Calculating total users count");
         return userRepository.count();
     }
 
@@ -37,7 +40,7 @@ public class DashboardServiceImpl implements IDashboardService {
 
     @Override
     public double totalRevenue() {
-
+        log.info("Calculating total revenue from orders");
         return orderRepository.findAll()
                 .stream()
                 .mapToDouble(o -> o.getTotalAmount())

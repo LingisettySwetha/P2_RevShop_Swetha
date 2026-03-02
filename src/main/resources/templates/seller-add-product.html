@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Product - RevShop Seller</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+    <div th:replace="navbar :: navbar"></div>
+
+    <main class="hero-section">
+        <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+            <a th:href="@{/seller/dashboard}"
+                style="color: var(--text-secondary); text-decoration: none; margin-bottom: 2rem; display: inline-block;">&larr;
+                Back to Dashboard</a>
+            <h1 class="hero-title" style="font-size: 2.5rem;">Add New <span style="font-weight: 300;">Product</span>
+            </h1>
+
+            <div class="glass-panel">
+                <form th:action="@{/seller/products/save}" th:object="${product}" method="post">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Product
+                            Name</label>
+                        <input type="text" th:field="*{name}" class="form-input"
+                            placeholder="e.g. Premium Wireless Headphones" required>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Description</label>
+                        <textarea th:field="*{description}" class="form-input" style="height: 120px;"
+                            placeholder="Describe your product..."></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Price
+                                (₹)</label>
+                            <input type="number" step="0.01" th:field="*{price}" class="form-input" required>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Discount
+                                Price (₹)</label>
+                            <input type="number" step="0.01" th:field="*{discountPrice}" class="form-input">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Initial
+                            Stock</label>
+                        <input type="number" th:field="*{quantity}" class="form-input" required>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Category</label>
+                        <select th:field="*{category.categoryId}" class="form-input" style="background-color: #1e293b;">
+                            <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-premium" style="width: 100%;">List Product</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
