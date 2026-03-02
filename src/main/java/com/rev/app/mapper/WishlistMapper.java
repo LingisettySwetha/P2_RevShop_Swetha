@@ -5,7 +5,7 @@ import com.rev.app.entity.Wishlist;
 
 public class WishlistMapper {
 
-    // ENTITY → DTO
+   
     public static WishlistDTO toDTO(Wishlist wishlist) {
 
         WishlistDTO dto = new WishlistDTO();
@@ -27,7 +27,7 @@ public class WishlistMapper {
         dto.setCategoryName(
                 wishlist.getProduct()
                         .getCategory()
-                        .getName()
+                        .getCategoryName()
         );
 
         return dto;
