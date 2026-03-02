@@ -11,73 +11,42 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    // Many reviews belong to one user
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    // Many reviews belong to one product
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(nullable = false)
-    private Integer rating;
+    private Integer rating;   
 
-    @Column(name = "review_text")
+    @Column(name = "review_comment", length = 1000)
     private String comment;
 
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // ===== Constructor =====
     public Review() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // ===== Getters and Setters =====
+ 
 
-    public Long getReviewId() {
-        return reviewId;
-    }
+    public Long getReviewId() { return reviewId; }
+    public void setReviewId(Long reviewId) { this.reviewId = reviewId; }
 
-    public void setReviewId(Long reviewId) {
-        this.reviewId = reviewId;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public User getUser() {
-        return user;
-    }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
 
-    public Product getProduct() {
-        return product;
-    }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }

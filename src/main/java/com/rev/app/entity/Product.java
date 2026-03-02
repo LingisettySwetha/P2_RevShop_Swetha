@@ -1,7 +1,9 @@
 package com.rev.app.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -29,25 +31,25 @@ public class Product {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // ===== Relationships =====
-
-    // Many products belong to one seller
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
-    private Seller seller;
-
-    // Many products belong to one category
+    private User seller;
+    
+   
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviews;
 
-    // ===== Constructor =====
 
     public Product() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // ===== Getters and Setters =====
+    
 
     public Long getProductId() {
         return productId;
@@ -101,11 +103,11 @@ public class Product {
         return createdAt;
     }
 
-    public Seller getSeller() {
+    public User getSeller() {
         return seller;
     }
 
-    public void setSeller(Seller seller) {
+    public void setSeller(User seller) {
         this.seller = seller;
     }
 
@@ -115,5 +117,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

@@ -1,6 +1,7 @@
 package com.rev.app.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,7 @@ public class Category {
     private String description;
 
     // One category has many products
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

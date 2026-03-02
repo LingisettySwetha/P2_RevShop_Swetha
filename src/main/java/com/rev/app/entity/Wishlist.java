@@ -1,35 +1,24 @@
 package com.rev.app.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "wishlists")
+@Table(name = "wishlist")
 public class Wishlist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wishlistId;
 
-    // Many wishlist entries belong to one user
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    // Many wishlist entries reference one product
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "added_at")
-    private LocalDateTime addedAt;
-
-    // ===== Constructor =====
-    public Wishlist() {
-        this.addedAt = LocalDateTime.now();
-    }
-
-    // ===== Getters and Setters =====
+    
 
     public Long getWishlistId() {
         return wishlistId;
@@ -53,9 +42,5 @@ public class Wishlist {
 
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public LocalDateTime getAddedAt() {
-        return addedAt;
     }
 }
