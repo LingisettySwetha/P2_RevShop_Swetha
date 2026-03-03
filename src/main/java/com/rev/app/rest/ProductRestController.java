@@ -85,7 +85,6 @@ public class ProductRestController {
         if (payload.containsKey("discountPrice") && payload.get("discountPrice") != null) {
             product.setDiscountPrice(Double.valueOf(payload.get("discountPrice").toString()));
         }
-
         if (payload.containsKey("categoryId")) {
             Long categoryId = Long.valueOf(payload.get("categoryId").toString());
             Category category = categoryService.getCategoryById(categoryId);

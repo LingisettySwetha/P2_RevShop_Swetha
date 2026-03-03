@@ -16,4 +16,6 @@ public interface IProductService {
     void deleteProduct(Long id);
     
     List<Product> searchProducts(String keyword, Long categoryId);
+
+    List<Product> getProductsBySeller(Long userId);
 }

@@ -31,6 +31,9 @@ public class Product {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
@@ -101,6 +104,14 @@ public class Product {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Seller getSeller() {
