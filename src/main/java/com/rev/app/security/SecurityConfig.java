@@ -42,7 +42,7 @@ public class SecurityConfig {
                         "/api/auth/**",
                         "/users/**",
                         "/products", "/products/**",
-                        "/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**",
+                        "/css/**", "/js/**", "/images/**", "/uploads/**", "/static/**", "/webjars/**",
                         "/favicon.ico",
                         "/error",
                         "/admin/**",
