@@ -10,7 +10,7 @@ public class ProductRequest {
     private Long sellerId;
     private Long categoryId;
 
-    // ===== GETTERS & SETTERS =====
+    
 
     public String getName() {
         return name;

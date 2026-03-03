@@ -6,7 +6,7 @@ import com.rev.app.entity.*;
 public class ProductMapper {
 
     public static Product toEntity(ProductRequest request,
-                                   User seller,
+                                   Seller seller,
                                    Category category) {
 
         Product product = new Product();

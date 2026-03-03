@@ -6,7 +6,7 @@ public class CartRequest {
     private Long productId;
     private Integer quantity;
 
-    // ===== Getters & Setters =====
+    
 
     public Long getUserId() {
         return userId;
