@@ -10,7 +10,7 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sellerId;
 
-    // One seller belongs to one user
+    
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -21,12 +21,12 @@ public class Seller {
     @Column(name = "gst_number")
     private String gstNumber;
 
-    // ===== Constructors =====
+    
 
     public Seller() {
     }
 
-    // ===== Getters and Setters =====
+    
 
     public Long getSellerId() {
         return sellerId;

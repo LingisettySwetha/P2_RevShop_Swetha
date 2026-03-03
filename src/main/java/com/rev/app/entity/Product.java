@@ -33,7 +33,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)
-    private User seller;
+    private Seller seller;
     
    
     @ManyToOne
@@ -103,11 +103,11 @@ public class Product {
         return createdAt;
     }
 
-    public User getSeller() {
+    public Seller getSeller() {
         return seller;
     }
 
-    public void setSeller(User seller) {
+    public void setSeller(Seller seller) {
         this.seller = seller;
     }
 

@@ -18,17 +18,17 @@ public class Category {
     @Column(name = "description")
     private String description;
 
-    // One category has many products
+    
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
-    // ===== Constructors =====
+    
 
     public Category() {
     }
 
-    // ===== Getters and Setters =====
+    
 
     public Long getCategoryId() {
         return categoryId;

@@ -22,6 +22,9 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderDate;
 
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
@@ -54,4 +57,7 @@ public class Order {
     public void setPayment(Payment payment) { this.payment = payment; }
 
     public List<OrderItem> getOrderItems(){ return orderItems; }
+
+    public String getShippingAddress() { return shippingAddress; }
+    public void setShippingAddress(String shippingAddress) { this.shippingAddress = shippingAddress; }
 }

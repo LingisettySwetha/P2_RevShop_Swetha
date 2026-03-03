@@ -10,12 +10,12 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    // 🔹 Many items belong to one cart
+    
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;;
 
-    // 🔹 Many cart items reference one product
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
@@ -23,7 +23,7 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity = 1;
 
-    // ===== Constructors =====
+    
 
     public CartItem() {
     }
@@ -34,7 +34,7 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // ===== Getters and Setters =====
+    
 
     public Long getCartItemId() {
         return cartItemId;
@@ -68,7 +68,7 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // 🔥 Useful for calculating total
+    
     @Transient
     public Double getTotalPrice() {
         return product.getPrice() * quantity;

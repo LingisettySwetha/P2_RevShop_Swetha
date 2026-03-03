@@ -11,7 +11,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    // One payment belongs to one order
+    
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
@@ -25,13 +25,13 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
-    // ===== Constructor =====
+    
     public Payment() {
         this.paymentDate = LocalDateTime.now();
         this.paymentStatus = "PENDING";
     }
 
-    // ===== Getters and Setters =====
+    
 
     public Long getPaymentId() {
         return paymentId;
