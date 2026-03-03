@@ -14,7 +14,8 @@ import java.util.UUID;
 @Service
 public class ImageStorageServiceImpl implements IImageStorageService {
 
-    private static final Path PRODUCT_UPLOAD_DIR = Paths.get("uploads", "products");
+    private static final Path PRODUCT_UPLOAD_DIR =
+            Paths.get("uploads", "images");
 
     @Override
     public String storeProductImage(MultipartFile file) {
@@ -36,13 +37,17 @@ public class ImageStorageServiceImpl implements IImageStorageService {
             }
         }
 
+        if (!ext.matches("\\.(jpg|jpeg|png|gif|webp)$")) {
+            throw new InvalidRequestException("Unsupported image format");
+        }
+
         String filename = UUID.randomUUID() + ext;
 
         try {
             Files.createDirectories(PRODUCT_UPLOAD_DIR);
             Path target = PRODUCT_UPLOAD_DIR.resolve(filename);
             Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-            return "/uploads/products/" + filename;
+            return "/uploads/images/" + filename;
         } catch (IOException ex) {
             throw new InvalidRequestException("Failed to store image");
         }
