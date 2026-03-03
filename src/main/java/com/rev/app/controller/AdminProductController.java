@@ -2,8 +2,8 @@ package com.rev.app.controller;
 
 import com.rev.app.entity.Product;
 import com.rev.app.exception.UnauthorizedException;
-import com.rev.app.repository.ICategoryRepository;
 import com.rev.app.repository.IUserRepository;
+import com.rev.app.service.ICategoryService;
 import com.rev.app.service.IProductService;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +26,7 @@ public class AdminProductController {
     private IUserRepository userRepository;
 
     @Autowired
-    private ICategoryRepository categoryRepository;
+    private ICategoryService categoryService;
 
     private void checkAdmin(HttpSession session){
         String role = (String) session.getAttribute("role");
@@ -55,7 +55,7 @@ public class AdminProductController {
 
         model.addAttribute("product", new Product());
         model.addAttribute("sellers", userRepository.findAll());
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryService.getAllCategories());
 
         return "add-product";
     }
@@ -82,7 +82,7 @@ public class AdminProductController {
         model.addAttribute("sellers",
                 userRepository.findAll());
         model.addAttribute("categories",
-                categoryRepository.findAll());
+                categoryService.getAllCategories());
 
         return "edit-product";
     }

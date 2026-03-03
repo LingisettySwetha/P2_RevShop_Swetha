@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/reviews")
 public class ReviewController {
@@ -22,6 +24,7 @@ public class ReviewController {
                             @RequestParam Integer rating,
                             @RequestParam String comment,
                             HttpSession session) {
+        log.info("UI: Adding review for product {}", productId);
 
         Long userId =
                 (Long) session.getAttribute("userId");
