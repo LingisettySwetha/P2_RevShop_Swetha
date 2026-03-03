@@ -10,7 +10,9 @@ import com.rev.app.exception.UnauthorizedException;
 import com.rev.app.service.IReviewService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewRestController {
@@ -24,6 +26,7 @@ public class ReviewRestController {
                             @RequestParam Integer rating,
                             @RequestParam String comment,
                             HttpSession session){
+        log.info("REST: Adding review for product {}", productId);
 
         Long userId =
                 (Long) session.getAttribute("userId");
