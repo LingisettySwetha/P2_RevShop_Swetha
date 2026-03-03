@@ -1,7 +1,7 @@
 package com.rev.app.controller;
 
 import com.rev.app.service.ICartService;
-import com.rev.app.service.IOrderService;
+import com.rev.app.service.IPaymentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class CheckoutController {
     private ICartService cartService;
 
     @Autowired
-    private IOrderService orderService;
+    private IPaymentService paymentService;
 
     @GetMapping("/checkout")
     public String checkout(HttpSession session, Model model) {
@@ -46,7 +46,12 @@ public class CheckoutController {
     }
 
     @PostMapping("/orders/checkout")
-    public String processCheckout(@RequestParam String address, HttpSession session) {
+    public String processCheckout(@RequestParam String address,
+                                  @RequestParam(defaultValue = "CARD") String paymentMethod,
+                                  @RequestParam(required = false) String cardNumber,
+                                  @RequestParam(required = false) String expiryDate,
+                                  @RequestParam(required = false) String cvv,
+                                  HttpSession session) {
         log.info("Processing checkout / payment with address: {}", address);
 
         Long userId = (Long) session.getAttribute("userId");
@@ -59,7 +64,13 @@ public class CheckoutController {
             return "redirect:/";
         }
 
-        orderService.placeOrder(userId, address);
+        paymentService.checkoutWithPayment(
+                userId,
+                address,
+                paymentMethod,
+                cardNumber,
+                expiryDate,
+                cvv);
         session.setAttribute("cartCount", 0);
 
         return "redirect:/orders/success";

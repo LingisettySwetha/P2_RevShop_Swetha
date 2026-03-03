@@ -7,6 +7,7 @@ import com.rev.app.entity.User;
 import com.rev.app.repository.ISellerRepository;
 import com.rev.app.repository.IUserRepository;
 import com.rev.app.service.ICategoryService;
+import com.rev.app.service.IImageStorageService;
 import com.rev.app.service.IProductService;
 import com.rev.app.service.ISellerService;
 import com.rev.app.exception.ResourceNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,9 @@ public class SellerDashboardController {
 
     @Autowired
     private IUserRepository userRepository;
+
+    @Autowired
+    private IImageStorageService imageStorageService;
 
     private Long getUserId(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
@@ -116,7 +121,9 @@ public class SellerDashboardController {
     }
 
     @PostMapping("/products/save")
-    public String saveProduct(@ModelAttribute Product product, HttpSession session) {
+    public String saveProduct(@ModelAttribute Product product,
+                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                              HttpSession session) {
         Long userId = getUserId(session);
         if (userId == null) return "redirect:/login";
 
@@ -125,6 +132,13 @@ public class SellerDashboardController {
         
         if (product.getCategory() != null && product.getCategory().getCategoryId() != null) {
             product.setCategory(categoryService.getCategoryById(product.getCategory().getCategoryId()));
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            product.setImageUrl(imageStorageService.storeProductImage(imageFile));
+        } else if (product.getProductId() != null) {
+            Product existing = productService.getProductById(product.getProductId());
+            product.setImageUrl(existing.getImageUrl());
         }
 
         productService.saveProduct(product);
