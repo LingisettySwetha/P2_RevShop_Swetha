@@ -15,7 +15,9 @@ import com.rev.app.mapper.ReviewMapper;
 import com.rev.app.repository.IProductRepository;
 import com.rev.app.repository.IReviewRepository;
 import com.rev.app.repository.IUserRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ReviewServiceImpl
         implements IReviewService {
@@ -35,6 +37,7 @@ public class ReviewServiceImpl
                           Long productId,
                           Integer rating,
                           String comment) {
+        log.info("Adding review for product {} by user {}", productId, userId);
 
         if (rating < 1 || rating > 5)
             throw new InvalidRequestException(

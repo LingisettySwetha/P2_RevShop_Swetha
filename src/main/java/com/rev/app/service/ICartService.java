@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface ICartService {
 
-//    void addToCart(CartRequest request);
+
 
     List<CartItem> viewCart(Long userId);
+
+    void updateQuantity(Long cartItemId, int quantity);
 
     void removeItem(Long cartItemId);
 

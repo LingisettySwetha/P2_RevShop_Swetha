@@ -8,7 +8,7 @@ import java.util.List;
 public interface IOrderService {
 
    
-    void placeOrder(Long userId);
+    Order placeOrder(Long userId, String address);
 
     
     List<Order> getOrdersByUser(Long userId);
@@ -22,6 +22,5 @@ public interface IOrderService {
     void deleteOrder(Long orderId);
     
     Order getOrderById(Long orderId);
-
-    
+   
 }
