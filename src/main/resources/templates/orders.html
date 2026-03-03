@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>My Orders - RevShop</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .order-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .order-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tracking-stepper {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .tracking-stepper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e2e8f0;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
+        }
+
+        .step.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .active .step-label {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body style="background: var(--bg-main);">
+    <div th:replace="navbar :: navbar"></div>
+
+    <main class="container" style="padding: 4rem 1rem; max-width: 900px;">
+        <div class="mb-4">
+            <a th:href="@{/products}" class="text-decoration-none text-muted small fw-bold">
+                &larr; Back to Shopping
+            </a>
+        </div>
+
+        <header class="mb-5">
+            <h1 class="fw-bold mb-1">My Orders</h1>
+            <p class="text-muted mb-0">Track your purchases and view order history</p>
+        </header>
+
+        <div th:if="${orders == null or #lists.isEmpty(orders)}" class="card-white text-center py-5">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+            <h3 class="text-muted">No orders yet</h3>
+            <p class="text-muted mb-4">You haven't placed any orders. Start exploring our premium collection!</p>
+            <a href="/products" class="btn-premium">Start Shopping</a>
+        </div>
+
+        <div th:each="o : ${orders}" class="order-card">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <div class="text-muted small fw-600 mb-1" th:text="${'ORDER ' + o.orderId}">ORDER ID</div>
+                    <h5 class="fw-800 mb-0" th:text="${'₹' + (o.totalAmount != null ? o.totalAmount : '0.00')}">Amount
+                    </h5>
+                    <div class="text-muted tiny"
+                        th:text="${o.orderDate != null ? 'Placed on ' + o.orderDate : 'Date unavailable'}">
+                        Date</div>
+                </div>
+                <div class="text-end">
+                    <span th:if="${o.orderStatus != null}" th:class="'alert-badge ' + (
+                        o.orderStatus == 'DELIVERED' ? 'badge-success' :
+                        (o.orderStatus == 'CANCELLED' ? 'badge-danger' :
+                        (o.orderStatus == 'SHIPPED' ? 'badge-primary' : 'badge-warning')))"
+                        th:text="${o.orderStatus}">Status</span>
+                    <span th:if="${o.orderStatus == null}" class="alert-badge badge-warning">PROCESSING</span>
+                </div>
+            </div>
+
+            
+            <div th:if="${o.orderStatus != 'CANCELLED'}" class="tracking-stepper">
+                <div class="position-relative">
+                    <div class="step"
+                        th:classappend="${o.orderStatus == 'PLACED' || o.orderStatus == 'PROCESSING' || o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED' ? 'completed' : ''}">
+                        <span
+                            th:if="${o.orderStatus == 'PLACED' || o.orderStatus == 'PROCESSING' || o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED'}">✓</span>
+                        <div class="step-label">Placed</div>
+                    </div>
+                </div>
+                <div class="position-relative">
+                    <div class="step"
+                        th:classappend="${o.orderStatus == 'PROCESSING' || o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED' ? 'completed' : (o.orderStatus == 'PLACED' ? 'active' : '')}">
+                        <span
+                            th:if="${o.orderStatus == 'PROCESSING' || o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED'}">✓</span>
+                        <div class="step-label">Processing</div>
+                    </div>
+                </div>
+                <div class="position-relative">
+                    <div class="step"
+                        th:classappend="${o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED' ? 'completed' : (o.orderStatus == 'PROCESSING' ? 'active' : '')}">
+                        <span th:if="${o.orderStatus == 'SHIPPED' || o.orderStatus == 'DELIVERED'}">✓</span>
+                        <div class="step-label">Shipped</div>
+                    </div>
+                </div>
+                <div class="position-relative">
+                    <div class="step"
+                        th:classappend="${o.orderStatus == 'DELIVERED' ? 'completed' : (o.orderStatus == 'SHIPPED' ? 'active' : '')}">
+                        <span th:if="${o.orderStatus == 'DELIVERED'}">✓</span>
+                        <div class="step-label">Delivered</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 d-flex gap-3 justify-content-end">
+                <a th:href="@{'/orders/' + ${o.orderId}}" class="btn-ghost py-2">View Details</a>
+
+                
+                <form th:if="${o.orderStatus == 'PLACED' || o.orderStatus == 'PROCESSING'}"
+                    th:action="@{'/orders/' + ${o.orderId} + '/cancel'}" method="post"
+                    onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                    <button type="submit" class="btn-ghost text-danger py-2" style="border-color: #fee2e2;">Cancel
+                        Order</button>
+                </form>
+
+                
+                <form th:action="@{'/orders/' + ${o.orderId} + '/delete'}" method="post"
+                    onsubmit="return confirm('Delete this order from your history?')">
+                    <button type="submit" class="btn-ghost text-muted py-2" style="border: none;">Delete</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{navbar :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

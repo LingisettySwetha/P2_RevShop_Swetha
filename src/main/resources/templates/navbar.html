@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <nav th:fragment="navbar" class="glass-nav px-4">
+        
+        <a href="javascript:void(0)" onclick="history.back()" class="back-btn" title="Go Back">
+            <span>&larr;</span>
+        </a>
+
+        <div class="container d-flex align-items-center justify-content-between">
+
+            <a class="navbar-brand fw-bold brand" href="/"
+                style="color: var(--primary); font-size: 1.5rem; text-decoration: none;">
+                🛒 RevShop
+            </a>
+
+            
+            <form action="/products" method="GET" class="flex-grow-1 mx-5 d-none d-md-block" style="max-width: 600px;">
+                <div style="position: relative;">
+                    <input name="keyword" class="form-input mb-0" placeholder="Search for products, brands and more"
+                        style="padding-left: 1rem; border-radius: 8px; background: #f1f5f9;">
+                </div>
+            </form>
+
+            <div class="d-flex align-items-center gap-3">
+                <a class="nav-icon-link" href="/products" title="Explore Products">
+                    <span class="nav-icon">🧭</span>
+                    <span>Explore</span>
+                </a>
+
+                <a th:if="${session.userId != null and session.role != 'SELLER'}" class="nav-icon-link" href="/wishlist"
+                    title="My Wishlist">
+                    <span class="nav-icon">❤️</span>
+                    <span>Wishlist</span>
+                </a>
+
+                <a th:if="${session.userId != null and session.role != 'SELLER'}" class="nav-icon-link" href="/orders"
+                    title="My Orders">
+                    <span class="nav-icon">📦</span>
+                    <span>Orders</span>
+                </a>
+
+                
+                <a th:if="${session.role == 'SELLER'}" class="btn-ghost" href="/seller/dashboard"
+                    style="padding: 0.5rem 1rem;">Seller Center</a>
+
+                
+                <a th:if="${session.role == 'ADMIN'}" class="btn-ghost" href="/admin/dashboard"
+                    style="padding: 0.5rem 1rem;">Admin Panel</a>
+
+                <a th:if="${session.role != 'SELLER'}" class="btn-premium" href="/cart" style="padding: 0.6rem 1.2rem;">
+                    <span>Cart</span>
+                    <span
+                        style="background: rgba(255,255,255,0.2); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.8rem;"
+                        th:text="${session.cartCount != null ? session.cartCount : 0}">0</span>
+                </a>
+
+                <div th:if="${session.userId != null}" class="d-flex align-items-center gap-3">
+                    <a class="text-primary small fw-600" href="/profile" style="text-decoration: none;">Profile</a>
+                    <a class="text-danger small fw-600" href="/logout" style="text-decoration: none;">Logout</a>
+                </div>
+
+                <a th:if="${session.userId == null}" class="btn-ghost" href="/login"
+                    style="padding: 0.5rem 1.5rem;">Login</a>
+            </div>
+
+        </div>
+
+    </nav>
+
+    <footer th:fragment="footer"
+        style="padding: 5rem 0; text-align: center; color: var(--text-muted); background: var(--bg-main);">
+        <div class="container">
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">🛒 RevShop</h3>
+            <p class="small mb-4">Elevating the way you shop online. Built for excellence.</p>
+            <div class="d-flex justify-content-center gap-4 mb-4">
+                <a href="#" class="text-muted small" style="text-decoration: none;">Privacy Policy</a>
+                <a href="#" class="text-muted small" style="text-decoration: none;">Terms of Service</a>
+                <a href="#" class="text-muted small" style="text-decoration: none;">Contact Us</a>
+            </div>
+            <div class="small">&copy; 2026 RevShop | All Rights Reserved.</div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

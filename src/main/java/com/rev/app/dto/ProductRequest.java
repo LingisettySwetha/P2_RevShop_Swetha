@@ -7,11 +7,10 @@ public class ProductRequest {
     private Double price;
     private Double discountPrice;
     private Integer quantity;
-
     private Long sellerId;
     private Long categoryId;
 
-    // ===== Getters & Setters =====
+    
 
     public String getName() {
         return name;

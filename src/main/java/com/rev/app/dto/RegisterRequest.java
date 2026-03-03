@@ -8,11 +8,11 @@ public class RegisterRequest {
     private String phone;
     private String role;
 
-    // Default constructor
+    
     public RegisterRequest() {
     }
 
-    // Getters and Setters
+    
 
     public String getName() {
         return name;

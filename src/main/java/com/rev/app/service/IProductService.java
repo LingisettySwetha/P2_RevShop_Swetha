@@ -1,19 +1,21 @@
 package com.rev.app.service;
 
-import com.rev.app.dto.ProductRequest;
 import com.rev.app.entity.Product;
-
 import java.util.List;
 
 public interface IProductService {
 
-    Product addProduct(ProductRequest request);
+    Product saveProduct(Product product);
 
     List<Product> getAllProducts();
 
-    List<Product> getProductsByCategory(Long categoryId);
+    Product getProductById(Long id);
 
-    List<Product> getProductsBySeller(Long sellerId);
+    Product updateProduct(Product product);
 
-    void deleteProduct(Long productId);
+    void deleteProduct(Long id);
+    
+    List<Product> searchProducts(String keyword, Long categoryId);
+
+    List<Product> getProductsBySeller(Long userId);
 }

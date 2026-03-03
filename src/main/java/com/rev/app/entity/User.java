@@ -29,7 +29,7 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "role")
+    @Column(nullable = false)
     private String role;
 
     @Column(name = "created_at")
@@ -99,7 +99,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
