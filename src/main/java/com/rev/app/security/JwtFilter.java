@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (Exception e) {
-                // Invalid token — skip authentication
+                
             }
         }
 

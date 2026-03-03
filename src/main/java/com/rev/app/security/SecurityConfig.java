@@ -38,20 +38,35 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/", "/home",
                         "/login", "/register",
+                        "/forgot-password", "/reset-password",
                         "/api/auth/**",
                         "/users/**",
                         "/products", "/products/**",
-                        "/css/**", "/js/**", "/images/**",
+                        "/css/**", "/js/**", "/images/**", "/static/**", "/webjars/**",
+                        "/favicon.ico",
                         "/error",
                         "/admin/**",
+                        "/seller/**",
                         "/cart", "/cart/**",
                         "/checkout", "/checkout/**",
                         "/orders", "/orders/**",
                         "/wishlist", "/wishlist/**",
                         "/reviews/**",
+                        "/profile", "/profile/**",
                         "/api/**")
                 .permitAll()
                 .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
             )
             .sessionManagement(sess ->
                 sess.sessionCreationPolicy(
