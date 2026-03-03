@@ -4,68 +4,138 @@
 <head>
     <title>Edit Product - RevShop Seller</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            flex-shrink: 0;
+            position: sticky;
+            top: 72px;
+            height: calc(100vh - 72px);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            background: var(--bg-main);
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
 </head>
 
-<body>
+<body style="background: var(--bg-main);">
     <div th:replace="navbar :: navbar"></div>
 
-    <main class="hero-section">
-        <div style="max-width: 600px; margin: 0 auto; text-align: left;">
-            <a th:href="@{/seller/dashboard}"
-                style="color: var(--text-secondary); text-decoration: none; margin-bottom: 2rem; display: inline-block;">&larr;
-                Back to Dashboard</a>
-            <h1 class="hero-title" style="font-size: 2.5rem;">Edit <span style="font-weight: 300;">Product</span></h1>
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar d-none d-lg-block">
+            <div class="mb-5 px-3">
+                <h6 class="text-muted small fw-bold text-uppercase mb-4">Management</h6>
+                <nav>
+                    <a th:href="@{/seller/dashboard}" class="nav-link-custom">
+                        <span>📊</span> Dashboard
+                    </a>
+                    <a th:href="@{/seller/products}" class="nav-link-custom active">
+                        <span>📦</span> My Inventory
+                    </a>
+                    <a th:href="@{/seller/orders}" class="nav-link-custom">
+                        <span>📝</span> Orders & Sales
+                    </a>
+                </nav>
+            </div>
+        </aside>
 
-            <div class="glass-panel">
+        
+        <main class="main-content">
+            <header class="mb-5">
+                <a th:href="@{/seller/products}" class="text-primary small fw-600 mb-2 d-inline-block"
+                    style="text-decoration: none;">&larr; Back to Inventory</a>
+                <h1 class="fw-bold mb-1">Edit Product</h1>
+                <p class="text-muted mb-0">Update your product details and availability</p>
+            </header>
+
+            <div class="form-card">
                 <form th:action="@{/seller/products/save}" th:object="${product}" method="post">
                     <input type="hidden" th:field="*{productId}">
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Product
-                            Name</label>
+                    <div class="mb-4">
+                        <label class="form-label">Product Name</label>
                         <input type="text" th:field="*{name}" class="form-input" required>
                     </div>
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label
-                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Description</label>
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
                         <textarea th:field="*{description}" class="form-input" style="height: 120px;"></textarea>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Price
-                                (₹)</label>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Price (₹)</label>
                             <input type="number" step="0.01" th:field="*{price}" class="form-input" required>
                         </div>
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Discount
-                                Price (₹)</label>
-                            <input type="number" step="0.01" th:field="*{discountPrice}" class="form-input">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Current Stock</label>
+                            <input type="number" th:field="*{quantity}" class="form-input" required>
                         </div>
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Current
-                            Stock</label>
-                        <input type="number" th:field="*{quantity}" class="form-input" required>
-                    </div>
 
-                    <div style="margin-bottom: 2rem;">
-                        <label
-                            style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Category</label>
-                        <select th:field="*{category.categoryId}" class="form-input" style="background-color: #1e293b;">
-                            <option th:each="cat : ${categories}" th:value="${cat.categoryId}" th:text="${cat.name}">
-                            </option>
+                    <div class="mb-5">
+                        <label class="form-label">Product Category</label>
+                        <select name="category.categoryId" class="form-input"
+                            style="appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right%201rem%20top%2050%25; background-size: 0.65rem%20auto; padding-right: 2.5rem;">
+                            <option th:each="cat : ${categories}" th:value="${cat.categoryId}"
+                                th:selected="${product.category != null && product.category.categoryId == cat.categoryId}"
+                                th:text="${cat.categoryName}">
+                                Category</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn-premium" style="width: 100%;">Update Product</button>
-                    <a th:href="@{/seller/dashboard}" class="btn-premium btn-ghost"
-                        style="width: 100%; text-align: center; margin-top: 1rem;">Cancel</a>
+                    <div class="d-flex gap-3 mt-2">
+                        <button type="submit" class="btn-premium px-5 py-3">Update Product &rarr;</button>
+                        <a th:href="@{/seller/products}" class="btn-ghost px-5 py-3">Cancel Changes</a>
+                    </div>
                 </form>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

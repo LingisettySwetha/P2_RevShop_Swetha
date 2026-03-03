@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Edit Product - RevShop Admin</title>
+    <title>Edit Category - RevShop Admin</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -52,7 +52,7 @@
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
             padding: 3rem;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             box-shadow: var(--shadow-sm);
         }
@@ -71,8 +71,11 @@
                     <a th:href="@{/admin/dashboard}" class="nav-link-custom">
                         <span>📊</span> Overview
                     </a>
-                    <a th:href="@{/admin/products}" class="nav-link-custom active">
+                    <a th:href="@{/admin/products}" class="nav-link-custom">
                         <span>📦</span> All Products
+                    </a>
+                    <a th:href="@{/admin/categories}" class="nav-link-custom active">
+                        <span>📂</span> Categories
                     </a>
                 </nav>
             </div>
@@ -81,19 +84,19 @@
         
         <main class="main-content">
             <header class="mb-5">
-                <a th:href="@{/admin/products}" class="text-primary small fw-600 mb-2 d-inline-block"
-                    style="text-decoration: none;">&larr; Back to Inventory</a>
-                <h1 class="fw-bold mb-1">Edit Global Product</h1>
-                <p class="text-muted mb-0">Modify product details from the administration console</p>
+                <a th:href="@{/admin/categories}" class="text-primary small fw-600 mb-2 d-inline-block"
+                    style="text-decoration: none;">&larr; Back to Categories</a>
+                <h1 class="fw-bold mb-1">Edit Category</h1>
+                <p class="text-muted mb-0">Update category details for RevShop</p>
             </header>
 
             <div class="form-card">
-                <form th:action="@{/admin/products/save}" th:object="${product}" method="post">
-                    <input type="hidden" th:field="*{productId}">
-
+                <form th:action="@{'/admin/categories/update/' + ${category.categoryId}}" th:object="${category}"
+                    method="post">
+                    <input type="hidden" th:field="*{categoryId}">
                     <div class="mb-4">
-                        <label class="form-label">Product Name</label>
-                        <input type="text" th:field="*{name}" class="form-input" required>
+                        <label class="form-label">Category Name</label>
+                        <input type="text" th:field="*{categoryName}" class="form-input" required>
                     </div>
 
                     <div class="mb-4">
@@ -101,37 +104,9 @@
                         <textarea th:field="*{description}" class="form-input" style="height: 120px;"></textarea>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Price (₹)</label>
-                            <input type="number" step="0.01" th:field="*{price}" class="form-input" required>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Stock Level</label>
-                            <input type="number" th:field="*{quantity}" class="form-input" required>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Assigned Seller</label>
-                            <select th:field="*{seller}" class="form-input">
-                                <option th:each="s : ${sellers}" th:value="${s.userId}" th:text="${s.name}"
-                                    th:selected="${p?.seller?.userId == s.userId}">Seller Name</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label">Product Category</label>
-                            <select th:field="*{category.categoryId}" class="form-input">
-                                <option th:each="c : ${categories}" th:value="${c.categoryId}" th:text="${c.name}"
-                                    th:selected="${p?.category?.categoryId == c.categoryId}">Category</option>
-                            </select>
-                        </div>
-                    </div>
-
                     <div class="d-flex gap-3 mt-4">
-                        <button type="submit" class="btn-premium px-5 py-3">Update Global Product &rarr;</button>
-                        <a th:href="@{/admin/products}" class="btn-ghost px-5 py-3">Cancel</a>
+                        <button type="submit" class="btn-premium px-5 py-3">Update Category &rarr;</button>
+                        <a th:href="@{/admin/categories}" class="btn-ghost px-5 py-3">Cancel</a>
                     </div>
                 </form>
             </div>

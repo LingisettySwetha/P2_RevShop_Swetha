@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Manage Products - RevShop Admin</title>
+    <title>Manage Categories - RevShop Admin</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -85,8 +85,11 @@
                     <a th:href="@{/admin/dashboard}" class="nav-link-custom">
                         <span>📊</span> Overview
                     </a>
-                    <a th:href="@{/admin/products}" class="nav-link-custom active">
+                    <a th:href="@{/admin/products}" class="nav-link-custom">
                         <span>📦</span> All Products
+                    </a>
+                    <a th:href="@{/admin/categories}" class="nav-link-custom active">
+                        <span>📂</span> Categories
                     </a>
                 </nav>
             </div>
@@ -96,10 +99,10 @@
         <main class="main-content">
             <header class="d-flex justify-content-between align-items-end mb-5">
                 <div>
-                    <h1 class="fw-bold mb-1">Global Inventory</h1>
-                    <p class="text-muted mb-0">Monitor and manage all products across RevShop</p>
+                    <h1 class="fw-bold mb-1">Categories Management</h1>
+                    <p class="text-muted mb-0">Manage product categories for RevShop</p>
                 </div>
-                <a th:href="@{/admin/products/add}" class="btn-premium py-2 px-4 shadow-sm">+ Add Global Product</a>
+                <a th:href="@{/admin/categories/add}" class="btn-premium py-2 px-4 shadow-sm">+ Add Category</a>
             </header>
 
             <div class="table-premium">
@@ -108,40 +111,25 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Product Details</th>
-                                <th>Category</th>
-                                <th>Seller</th>
-                                <th>Price</th>
+                                <th>Category Name</th>
+                                <th>Description</th>
                                 <th class="text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="p : ${products}">
-                                <td class="text-muted small" th:text="${'#PID-' + p.productId}">ID</td>
-                                <td>
-                                    <div class="fw-bold text-main" th:text="${p.name}">Product Name</div>
-                                    <div class="text-muted tiny" th:text="${#strings.abbreviate(p.description, 50)}">
-                                        Desc</div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-muted fw-600"
-                                        th:text="${p.category.categoryName}">Category</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div style="width: 24px; height: 24px; background: var(--primary-light); color: var(--primary); border-radius: 100px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;"
-                                            th:text="${#strings.substring(p.seller.name, 0, 1)}">S</div>
-                                        <span class="small fw-500" th:text="${p.seller.name}">Seller</span>
-                                    </div>
-                                </td>
-                                <td class="fw-bold" th:text="${'₹' + p.price}">Price</td>
+                            <tr th:each="cat : ${categories}">
+                                <td class="text-muted small" th:text="${'#CAT-' + cat.categoryId}">ID</td>
+                                <td class="fw-bold text-main" th:text="${cat.categoryName}">Category Name</td>
+                                <td class="text-muted small" th:text="${cat.description}">Description</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a th:href="@{/admin/products/edit/{id}(id=${p.productId})}" class="btn-ghost"
+                                        <a th:href="@{/admin/categories/edit/{id}(id=${cat.categoryId})}"
+                                            class="btn-ghost"
                                             style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px;">Edit</a>
-                                        <a th:href="@{/admin/products/delete/{id}(id=${p.productId})}" class="btn-ghost"
+                                        <a th:href="@{/admin/categories/delete/{id}(id=${cat.categoryId})}"
+                                            class="btn-ghost"
                                             style="padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 8px; border-color: var(--error); color: var(--error);"
-                                            onclick="return confirm('Are you sure you want to remove this product globally?')">Delete</a>
+                                            onclick="return confirm('Deleting this category may affect associated products. Are you sure?')">Delete</a>
                                     </div>
                                 </td>
                             </tr>

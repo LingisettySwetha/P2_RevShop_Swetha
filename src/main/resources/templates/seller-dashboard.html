@@ -2,143 +2,271 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Seller Dashboard - RevShop</title>
+    <title>Seller Dashboard - RevShop Central</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
         }
 
-        .stat-card {
-            text-align: center;
-            padding: 2rem;
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            flex-shrink: 0;
+            position: sticky;
+            top: 72px;
+            height: calc(100vh - 72px);
         }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            background: var(--bg-main);
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 500;
             margin-bottom: 0.5rem;
         }
 
-        .stat-label {
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stats-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stats-val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-lab {
+            color: var(--text-muted);
             font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
         }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .alert-badge {
-            background: #ef4444;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 99px;
+        th {
+            background: #f8fafc;
+            padding: 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .order-pill {
+            padding: 0.35rem 0.75rem;
+            border-radius: 100px;
             font-size: 0.75rem;
             font-weight: 700;
         }
     </style>
 </head>
 
-<body>
+<body style="background: var(--bg-main);">
     <div th:replace="navbar :: navbar"></div>
 
-    <main class="hero-section" style="padding-top: 4rem; text-align: left; max-width: 1200px; margin: 0 auto;">
-        <h1 class="hero-title">Seller <span style="font-weight: 300;">Dashboard</span></h1>
-
-        <div class="stats-grid">
-            <div class="glass-panel stat-card">
-                <div class="stat-value" th:text="${'₹' + #numbers.formatDecimal(totalRevenue, 1, 2)}">₹0.00</div>
-                <div class="stat-label">Total Revenue</div>
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar d-none d-lg-block">
+            <div class="mb-5 px-3">
+                <h6 class="text-muted small fw-bold text-uppercase mb-4">Management</h6>
+                <nav>
+                    <a th:href="@{/seller/dashboard}" class="nav-link-custom active">
+                        <span>📊</span> Dashboard
+                    </a>
+                    <a th:href="@{/seller/products}" class="nav-link-custom">
+                        <span>📦</span> My Inventory
+                    </a>
+                    <a th:href="@{/seller/orders}" class="nav-link-custom">
+                        <span>📝</span> Orders & Sales
+                        <span id="sidebarNewOrderBadge"
+                              class="alert-badge badge-warning"
+                              th:text="${newOrderCount}"
+                              th:style="${newOrderCount > 0 ? '' : 'display:none;'}">0</span>
+                    </a>
+                </nav>
             </div>
-            <div class="glass-panel stat-card">
-                <div class="stat-value" th:text="${products.size()}">0</div>
-                <div class="stat-label">Active Products</div>
+
+            <div class="px-3">
+                <h6 class="text-muted small fw-bold text-uppercase mb-4">Account</h6>
+                <nav>
+                    <a href="#" class="nav-link-custom">
+                        <span>⚙️</span> Settings
+                    </a>
+                    <a href="/logout" class="nav-link-custom text-danger">
+                        <span>🚪</span> Logout
+                    </a>
+                </nav>
             </div>
-            <div class="glass-panel stat-card">
-                <div class="stat-value" th:text="${orders.size()}">0</div>
-                <div class="stat-label">Items Ordered</div>
-            </div>
-        </div>
+        </aside>
 
-        <div class="section-header">
-            <h2>Inventory <span style="color: var(--text-secondary); font-weight: 300;">Status</span></h2>
-            <a th:href="@{/seller/products/add}" class="btn-premium">Add New Product</a>
-        </div>
-
-        <div class="glass-panel" style="margin-bottom: 3rem;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr
-                        style="text-align: left; color: var(--text-secondary); border-bottom: 1px solid var(--glass-border);">
-                        <th style="padding: 1rem;">Product</th>
-                        <th style="padding: 1rem;">Price</th>
-                        <th style="padding: 1rem;">Stock</th>
-                        <th style="padding: 1rem;">Status</th>
-                        <th style="padding: 1rem;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="p : ${products}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <td style="padding: 1rem;" th:text="${p.name}">Product Name</td>
-                        <td style="padding: 1rem;" th:text="${'₹' + p.price}">₹0.00</td>
-                        <td style="padding: 1rem;" th:text="${p.quantity}">0</td>
-                        <td style="padding: 1rem;">
-                            <span th:if="${p.quantity < 5}" class="alert-badge">Low Stock</span>
-                            <span th:if="${p.quantity >= 5}" style="color: #10b981; font-weight: 600;">Optimal</span>
-                        </td>
-                        <td style="padding: 1rem;">
-                            <a th:href="@{'/seller/products/edit/' + ${p.productId}}"
-                                style="color: var(--accent-cyan); text-decoration: none; margin-right: 1rem;">Edit</a>
-                            <a th:href="@{'/products/' + ${p.productId}}"
-                                style="color: #a855f7; text-decoration: none; margin-right: 1rem;">Reviews</a>
-                            <a th:href="@{'/seller/products/delete/' + ${p.productId}}"
-                                style="color: #ef4444; text-decoration: none;"
-                                onclick="return confirm('Delete this product?')">Delete</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section-header">
-            <h2>Recent <span style="color: var(--text-secondary); font-weight: 300;">Orders</span></h2>
-            <a th:href="@{/seller/orders}" class="btn-ghost btn-premium">View All Orders</a>
-        </div>
-
-        <div class="grid-premium" style="padding: 0;">
-            <div th:each="o : ${orders}" class="card-premium" style="padding: 1.5rem;">
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;"
-                    th:text="${#temporals.format(o.order.orderDate, 'dd MMM yyyy')}">Date</div>
-                <h3 th:text="${o.product.name}" style="margin-bottom: 1rem;">Product Name</h3>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Qty: <span th:text="${o.quantity}">1</span></span>
-                    <span style="font-weight: 700;" th:text="${'₹' + (o.price * o.quantity)}">Total</span>
+        
+        <main class="main-content">
+            <header class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h1 class="fw-bold mb-1">Seller Dashboard</h1>
+                    <p class="text-muted mb-0">Overview of your business performance</p>
                 </div>
-                <div
-                    style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border); font-size: 0.9rem;">
-                    Status: <span th:text="${o.order.orderStatus}" style="color: var(--accent-cyan);">Status</span>
+                <a th:href="@{/seller/products/add}" class="btn-premium">
+                    <span>+</span> Add New Product
+                </a>
+            </header>
+
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-lab">Total Revenue</div>
+                        <div class="stats-val" th:text="${'₹' + #numbers.formatDecimal(totalRevenue, 1, 2)}">₹0.00</div>
+                        <div class="text-success small fw-600">↑ 12% from last month</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-lab">Active Products</div>
+                        <div class="stats-val" th:text="${products.size()}">0</div>
+                        <div class="text-muted small">Updated just now</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-lab">Total Orders</div>
+                        <div class="stats-val" th:text="${orders.size()}">0</div>
+                        <div class="text-primary small fw-600">
+                            <span id="pendingOrderCountText" th:text="${pendingOrderCount}">0</span> pending fulfillment
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+            <div th:if="${newOrderCount > 0}" class="alert alert-warning d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <strong>New order notification:</strong>
+                    <span id="newOrderCountText" th:text="${newOrderCount}">0</span> new order(s) need your action.
+                </div>
+                <a th:href="@{/seller/orders}" class="btn btn-sm btn-dark">View Orders</a>
+            </div>
+
+            
+            <div class="card-white mb-5" style="padding: 0; overflow: hidden;">
+                <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Inventory Status</h5>
+                    <a th:href="@{/seller/products}" class="text-primary small fw-600"
+                        style="text-decoration: none;">Manage Inventory</a>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${products}">
+                                <td>
+                                    <div class="fw-600" th:text="${p.name}">Product</div>
+                                    <div class="text-muted tiny">ID: <span th:text="${p.productId}"></span></div>
+                                </td>
+                                <td th:text="${'₹' + p.price}">₹0.00</td>
+                                <td th:text="${p.quantity}">0</td>
+                                <td>
+                                    <span th:if="${p.quantity < 5}" class="alert-badge badge-danger">Low Stock</span>
+                                    <span th:if="${p.quantity >= 5}" class="alert-badge badge-success">Available</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-3">
+                                        <a th:href="@{'/seller/products/edit/' + ${p.productId}}"
+                                            class="text-primary small fw-600" style="text-decoration: none;">Edit</a>
+                                        <a th:href="@{'/seller/products/delete/' + ${p.productId}}"
+                                            class="text-danger small fw-600" style="text-decoration: none;"
+                                            onclick="return confirm('Delete this product?')">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+            <div class="card-white" style="padding: 0; overflow: hidden;">
+                <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Recent Orders</h5>
+                    <a th:href="@{/seller/orders}" class="btn-ghost py-1 px-3" style="font-size: 0.8rem;">View All
+                        Sales</a>
+                </div>
+                <div class="row m-0 g-0">
+                    <div th:each="o : ${orders}"
+                        class="col-12 p-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div
+                                style="width: 48px; height: 48px; background: #eff6ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                📦</div>
+                            <div>
+                                <div class="fw-600" th:text="${o.product.name}">Product</div>
+                                <div class="text-muted small"
+                                    th:text="${#temporals.format(o.order.orderDate, 'dd MMM yyyy')}">Date</div>
+                            </div>
+                        </div>
+                        <div class="fw-bold" th:text="${'₹' + (o.price * o.quantity)}">Total</div>
+                        <span class="order-pill"
+                            th:classappend="${o.order.orderStatus == 'DELIVERED' ? 'badge-success' : 
+                                                  (o.order.orderStatus == 'CANCELLED' ? 'badge-danger' : 
+                                                  (o.order.orderStatus == 'SHIPPED' ? 'badge-primary' : 'badge-warning'))}"
+                            th:text="${o.order.orderStatus}">Status</span>
+                        <span th:if="${o.order.orderStatus == 'PLACED'}" class="badge-new">NEW</span>
+                    </div>
+                </div>
+            </div>
+    </div>
     </main>
+    </div>
 
-    <footer style="padding: 4rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
-        &copy; 2026 RevShop Seller Central. Built for Excellence.
-    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/seller-dashboard.js}"></script>
 </body>
 
 </html>

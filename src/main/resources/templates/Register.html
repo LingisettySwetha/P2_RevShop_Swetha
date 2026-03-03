@@ -1,35 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>User Registration</title>
+    <title>Create Account - RevShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-main) 100%);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            padding: 3rem;
+        }
+
+        .auth-logo {
+            font-size: 2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            text-decoration: none;
+            display: block;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Register User</h2>
+    <div class="auth-container">
+        <div class="auth-card">
 
-<form action="/users/register" method="post">
+            <a href="/" class="auth-logo fw-bold brand">🛒 RevShop</a>
 
-    <label>Name:</label><br>
-    <input type="text" name="name" required><br><br>
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-2">Join RevShop</h2>
+                <p class="text-muted small">Create an account to start your premium shopping or selling journey</p>
+            </div>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
+            <div id="errorMsg" class="alert alert-danger d-none p-2 mb-4 text-center small" style="border-radius: 8px;">
+            </div>
 
-    <label>Password:</label><br>
-    <input type="password" name="password" required><br><br>
+            <form action="/users/register" method="post" id="registerForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input class="form-input" name="name" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input class="form-input" name="email" type="email" placeholder="e.g. john@example.com"
+                            required>
+                    </div>
+                </div>
 
-    <label>Phone:</label><br>
-    <input type="text" name="phone"><br><br>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-input" name="password" placeholder="Min. 4 characters"
+                            required minlength="4">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input class="form-input" name="phone" placeholder="e.g. +1 234 567 890" required>
+                    </div>
+                </div>
 
-    <label>Role:</label><br>
-    <select name="role">
-        <option value="BUYER">Buyer</option>
-        <option value="SELLER">Seller</option>
-    </select><br><br>
+                <div class="mb-4">
+                    <label class="form-label">Account Type</label>
+                    <select class="form-input" name="role"
+                        style="appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right%201rem%20top%2050%25; background-size: 0.65rem%20auto; padding-right: 2.5rem;">
+                        <option value="BUYER">Buyer (Shop Premium Products)</option>
+                        <option value="SELLER">Seller (Reach Modern Buyers)</option>
+                    </select>
+                </div>
 
-    <button type="submit">Register</button>
+                <button class="btn-premium w-100 py-3" type="submit">Create Account &rarr;</button>
 
-</form>
+            </form>
+
+            <div class="text-center mt-5">
+                <p class="text-muted small">
+                    Already have an account?
+                    <a href="/login" class="text-primary fw-bold" style="text-decoration: none;">Sign in here</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/register.js}"></script>
 
 </body>
+
 </html>

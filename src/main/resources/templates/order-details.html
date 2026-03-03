@@ -9,9 +9,8 @@
 
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-dark bg-primary px-4">
-    <a class="navbar-brand" href="/">🛒 RevShop</a>
+    <a class="navbar-brand" href="/">RevShop</a>
 
     <div>
         <a href="/orders" class="btn btn-light">Back to Orders</a>
@@ -32,6 +31,7 @@
             <th>Price</th>
             <th>Quantity</th>
             <th>Total</th>
+            <th>Action</th>
         </tr>
         </thead>
 
@@ -41,14 +41,21 @@
             <td th:text="${item.product.name}"></td>
 
             <td>
-                ₹ <span th:text="${item.price}"></span>
+                Rs <span th:text="${item.price}"></span>
             </td>
 
             <td th:text="${item.quantity}"></td>
 
             <td>
-                ₹
+                Rs
                 <span th:text="${item.price * item.quantity}"></span>
+            </td>
+
+            <td>
+                <a th:href="@{/products/{id}(id=${item.product.productId})}"
+                   class="btn btn-sm btn-outline-primary">
+                    View Details
+                </a>
             </td>
         </tr>
 

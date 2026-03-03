@@ -1,79 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>My Wishlist</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+<head>
+    <title>My Wishlist - RevShop</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background: var(--bg-main);">
+    <div th:replace="navbar :: navbar"></div>
 
-<div class="container mt-5">
-
-    <h2 class="mb-4 text-center">❤️ My Wishlist</h2>
-
-    <div th:if="${#lists.isEmpty(wishlist)}"
-         class="alert alert-info text-center">
-        Your wishlist is empty.
-    </div>
-
-    <div class="row">
-
-        <div class="col-md-4 mb-4"
-             th:each="item : ${wishlist}">
-
-            <div class="card shadow h-100">
-
-                <div class="card-body">
-
-                    <h5 class="card-title"
-                        th:text="${item.product.name}">
-                    </h5>
-
-                    <p class="card-text">
-                        ₹ <span th:text="${item.product.price}"></span>
-                    </p>
-
-                    <p>
-                        Category:
-                        <span th:text="${item.product.category.name}"></span>
-                    </p>
-
-                    
-                    <form action="/cart/add"
-                          method="post">
-
-                        <input type="hidden"
-                               name="productId"
-                               th:value="${item.product.productId}">
-
-                        <button class="btn btn-primary btn-sm">
-                            Add to Cart
-                        </button>
-                    </form>
-
-                   
-                    <a th:href="@{/wishlist/remove/{id}(id=${item.wishlistId})}"
-                       class="btn btn-danger btn-sm mt-2">
-                        Remove
-                    </a>
-
-                </div>
-
-            </div>
-
+    <main class="container" style="padding: 4rem 1rem;">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold mb-2">My Wishlist</h1>
+            <p class="text-muted">Items you've saved for later. Make them yours today!</p>
         </div>
 
-    </div>
+        <div th:if="${wishlist == null or wishlist.isEmpty()}" class="card-white text-center py-5">
+            <div style="font-size: 4rem; margin-bottom: 1.5rem;">❤️</div>
+            <h3 class="fw-bold mb-2">Wishlist is empty</h3>
+            <p class="text-muted mb-4">You haven't saved any items yet. Start exploring and click the heart icon on
+                products you love.</p>
+            <a href="/products" class="btn-premium px-5 py-3">Discover Products</a>
+        </div>
 
-    <div class="text-center mt-4">
-        <a href="/products" class="btn btn-outline-dark">
-            Continue Shopping
-        </a>
-    </div>
+        <div class="grid-premium">
+            <div th:each="item : ${wishlist}" class="card-white"
+                style="padding: 1.5rem; display: flex; flex-direction: column; height: 100%;">
+                <div
+                    style="width: 100%; aspect-ratio: 1; background: #f8fafc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 1.5rem;">
+                    📦</div>
 
-</div>
+                <h5 class="fw-bold mb-2" th:text="${item.productName}">Product Name</h5>
+                <p class="text-muted small mb-4"
+                    th:text="${item.categoryName != null ? 'Category: ' + item.categoryName : 'Saved item'}">
+                    Category</p>
 
+                <div class="mt-auto">
+                    <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 1.5rem;">
+                        ₹<span th:text="${item.price}">0.00</span></div>
+
+                    <div class="d-flex gap-2 align-items-stretch">
+                        <div class="flex-grow-1">
+                            <form action="/cart/add" method="post" class="h-100">
+                                <input type="hidden" name="productId" th:value="${item.productId}">
+                                <button type="submit" class="btn-premium w-100 h-100 py-2" style="font-size: 0.9rem;">Add to
+                                    Cart</button>
+                            </form>
+                        </div>
+                        <div style="width: 126px;">
+                            <a th:href="@{/wishlist/remove/{id}(id=${item.wishlistId})}" class="btn-ghost d-flex align-items-center justify-content-center w-100 h-100 py-2"
+                                style="font-size: 0.9rem; text-align: center; border-color: var(--error); color: var(--error);">Remove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/products" class="text-primary fw-600" style="text-decoration: none;">&larr; Continue Exploring</a>
+        </div>
+    </main>
+
+    <footer th:replace="~{navbar :: footer}"></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
