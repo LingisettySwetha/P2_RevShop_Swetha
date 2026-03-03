@@ -1,10 +1,10 @@
 package com.rev.app.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.rev.app.entity.Cart;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ICartRepository extends JpaRepository<Cart, Long> {
+public interface ICartRepository
+        extends JpaRepository<Cart, Long> {
 
-    Cart findByUserUserId(Long userId);
-
+    Cart findByUser_UserId(Long userId);
 }

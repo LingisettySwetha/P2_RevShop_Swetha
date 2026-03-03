@@ -17,4 +17,6 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
 		       """)
 		List<Product> searchProducts(@Param("keyword") String keyword,
 		                             @Param("categoryId") Long categoryId);
+
+    List<Product> findBySeller_User_UserId(Long userId);
 }

@@ -1,21 +1,19 @@
 package com.rev.app.repository;
 
-import com.rev.app.entity.User;
-
-import java.util.List;
 import java.util.Optional;
 
-public interface IUserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    User saveUser(User user);
+import com.rev.app.entity.User;
 
-    Optional<User> findUserById(Long id);
+public interface IUserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findUserByEmail(String email);
+   
+    Optional<User> findByEmailAndPasswordHash(String email,
+                                              String passwordHash);
 
-    List<User> findAllUsers();
-
-    void deleteUser(Long id);
     
     Optional<User> findByEmail(String email);
+
+    long count();
 }
