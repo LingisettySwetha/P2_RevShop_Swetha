@@ -253,11 +253,11 @@
                         </div>
                         <div class="fw-bold" th:text="${'₹' + (o.price * o.quantity)}">Total</div>
                         <span class="order-pill"
-                            th:classappend="${o.order.orderStatus == 'DELIVERED' ? 'badge-success' : 
-                                                  (o.order.orderStatus == 'CANCELLED' ? 'badge-danger' : 
-                                                  (o.order.orderStatus == 'SHIPPED' ? 'badge-primary' : 'badge-warning'))}"
+                            th:classappend="${o.order.orderStatus != null && o.order.orderStatus.name() == 'DELIVERED' ? 'badge-success' : 
+                                                  (o.order.orderStatus != null && o.order.orderStatus.name() == 'CANCELLED' ? 'badge-danger' : 
+                                                  (o.order.orderStatus != null && o.order.orderStatus.name() == 'SHIPPED' ? 'badge-primary' : 'badge-warning'))}"
                             th:text="${o.order.orderStatus}">Status</span>
-                        <span th:if="${o.order.orderStatus == 'PLACED'}" class="badge-new">NEW</span>
+                        <span th:if="${o.order.orderStatus != null && o.order.orderStatus.name() == 'PLACED'}" class="badge-new">NEW</span>
                     </div>
                 </div>
             </div>

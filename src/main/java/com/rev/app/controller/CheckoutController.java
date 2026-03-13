@@ -47,7 +47,9 @@ public class CheckoutController {
 
     @PostMapping("/orders/checkout")
     public String processCheckout(@RequestParam String address,
-                                  @RequestParam(defaultValue = "CARD") String paymentMethod,
+                                  @RequestParam(defaultValue = "CREDIT_CARD") String paymentMethod,
+                                  @RequestParam(required = false) String cardHolderName,
+                                  @RequestParam(required = false) String cardType,
                                   @RequestParam(required = false) String cardNumber,
                                   @RequestParam(required = false) String expiryDate,
                                   @RequestParam(required = false) String cvv,
@@ -68,6 +70,8 @@ public class CheckoutController {
                 userId,
                 address,
                 paymentMethod,
+                cardHolderName,
+                cardType,
                 cardNumber,
                 expiryDate,
                 cvv);

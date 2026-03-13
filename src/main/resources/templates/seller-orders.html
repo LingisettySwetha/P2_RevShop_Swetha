@@ -187,25 +187,25 @@
                                     <form th:action="@{/seller/orders/update-status}" method="post">
                                         <input type="hidden" name="orderId" th:value="${item.order.orderId}">
                                         <select name="status" class="status-select mb-2" onchange="this.form.submit()">
-                                            <option value="PLACED" th:selected="${item.order.orderStatus == 'PLACED'}">
+                                            <option value="PLACED" th:selected="${item.order.orderStatus != null && item.order.orderStatus.name() == 'PLACED'}">
                                                 PLACED</option>
-                                            <option value="PROCESSING"
-                                                th:selected="${item.order.orderStatus == 'PROCESSING'}">PROCESSING
+                                            <option value="CONFIRMED"
+                                                th:selected="${item.order.orderStatus != null && item.order.orderStatus.name() == 'CONFIRMED'}">CONFIRMED
                                             </option>
                                             <option value="SHIPPED"
-                                                th:selected="${item.order.orderStatus == 'SHIPPED'}">SHIPPED</option>
+                                                th:selected="${item.order.orderStatus != null && item.order.orderStatus.name() == 'SHIPPED'}">SHIPPED</option>
                                             <option value="DELIVERED"
-                                                th:selected="${item.order.orderStatus == 'DELIVERED'}">DELIVERED
+                                                th:selected="${item.order.orderStatus != null && item.order.orderStatus.name() == 'DELIVERED'}">DELIVERED
                                             </option>
                                             <option value="CANCELLED"
-                                                th:selected="${item.order.orderStatus == 'CANCELLED'}">CANCELLED
+                                                th:selected="${item.order.orderStatus != null && item.order.orderStatus.name() == 'CANCELLED'}">CANCELLED
                                             </option>
                                         </select>
                                     </form>
                                     <div class="text-center">
-                                        <span th:if="${item.order.orderStatus == 'PLACED'}"
+                                        <span th:if="${item.order.orderStatus != null && item.order.orderStatus.name() == 'PLACED'}"
                                             class="alert-badge badge-warning">Action Required</span>
-                                        <span th:if="${item.order.orderStatus == 'DELIVERED'}"
+                                        <span th:if="${item.order.orderStatus != null && item.order.orderStatus.name() == 'DELIVERED'}"
                                             class="alert-badge badge-success">Completed</span>
                                     </div>
                                 </td>

@@ -31,8 +31,8 @@ public class PasswordRecoveryController {
                 "If an account exists for this email, a reset link has been generated.");
 
         if (token != null) {
-            redirectAttributes.addFlashAttribute("devResetLink", "/reset-password?token=" + token);
-            log.info("Password reset link generated for {}", email);
+            String resetLink = "/reset-password?token=" + token;
+            log.info("Password reset link generated for {} -> {}", email, resetLink);
         }
 
         return "redirect:/forgot-password";

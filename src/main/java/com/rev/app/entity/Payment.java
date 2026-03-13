@@ -22,6 +22,18 @@ public class Payment {
     @Column(name = "payment_status")
     private String paymentStatus;
 
+    @Column(name = "card_holder_name")
+    private String cardHolderName;
+
+    @Column(name = "card_type")
+    private String cardType;
+
+    @Column(name = "masked_card_number")
+    private String maskedCardNumber;
+
+    @Column(name = "card_expiry")
+    private String cardExpiry;
+
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
@@ -67,5 +79,37 @@ public class Payment {
 
     public LocalDateTime getPaymentDate() {
         return paymentDate;
+    }
+
+    public String getCardHolderName() {
+        return cardHolderName;
+    }
+
+    public void setCardHolderName(String cardHolderName) {
+        this.cardHolderName = cardHolderName;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getMaskedCardNumber() {
+        return maskedCardNumber;
+    }
+
+    public void setMaskedCardNumber(String maskedCardNumber) {
+        this.maskedCardNumber = maskedCardNumber;
+    }
+
+    public String getCardExpiry() {
+        return cardExpiry;
+    }
+
+    public void setCardExpiry(String cardExpiry) {
+        this.cardExpiry = cardExpiry;
     }
 }

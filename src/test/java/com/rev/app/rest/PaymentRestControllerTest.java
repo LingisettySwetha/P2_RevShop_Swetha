@@ -2,6 +2,7 @@ package com.rev.app.rest;
 
 import com.rev.app.dto.PaymentCheckoutRequest;
 import com.rev.app.entity.Order;
+import com.rev.app.entity.Payment;
 import com.rev.app.exception.UnauthorizedException;
 import com.rev.app.service.IOrderService;
 import com.rev.app.service.IPaymentService;
@@ -37,17 +38,23 @@ class PaymentRestControllerTest {
     void testCheckout_Success() {
         PaymentCheckoutRequest request = new PaymentCheckoutRequest();
         request.setAddress("Address");
-        request.setPaymentMethod("CARD");
+        request.setPaymentMethod("CREDIT_CARD");
+        request.setCardHolderName("John Doe");
+        request.setCardType("SBI Credit Card");
         request.setCardNumber("4111111111111111");
         request.setExpiryDate("12/30");
         request.setCvv("123");
 
         Order order = new Order();
         order.setOrderId(10L);
+        Payment payment = new Payment();
+        payment.setPaymentMethod("CREDIT_CARD");
+        payment.setPaymentStatus("PAID");
+        order.setPayment(payment);
 
         when(session.getAttribute("userId")).thenReturn(1L);
         when(session.getAttribute("role")).thenReturn("BUYER");
-        when(paymentService.checkoutWithPayment(1L, "Address", "CARD", "4111111111111111", "12/30", "123"))
+        when(paymentService.checkoutWithPayment(1L, "Address", "CREDIT_CARD", "John Doe", "SBI Credit Card", "4111111111111111", "12/30", "123"))
                 .thenReturn(order);
 
         Map<String, Object> response = paymentRestController.checkout(request, session);
@@ -59,7 +66,7 @@ class PaymentRestControllerTest {
     void testCheckout_UnauthorizedRole() {
         PaymentCheckoutRequest request = new PaymentCheckoutRequest();
         request.setAddress("Address");
-        request.setPaymentMethod("CARD");
+        request.setPaymentMethod("CREDIT_CARD");
 
         when(session.getAttribute("userId")).thenReturn(1L);
         when(session.getAttribute("role")).thenReturn("SELLER");

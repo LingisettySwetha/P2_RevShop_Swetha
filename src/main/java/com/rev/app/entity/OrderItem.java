@@ -20,6 +20,7 @@ public class OrderItem {
 
     private Integer quantity;
     private Double price;
+    private Double subtotal;
 
     public Long getOrderItemId(){ return orderItemId; }
     public void setOrderItemId(Long id){ this.orderItemId=id; }
@@ -35,4 +36,7 @@ public class OrderItem {
 
     public Double getPrice(){ return price; }
     public void setPrice(Double price){ this.price=price; }
+
+    public Double getSubtotal() { return subtotal; }
+    public void setSubtotal(Double subtotal) { this.subtotal = subtotal; }
 }

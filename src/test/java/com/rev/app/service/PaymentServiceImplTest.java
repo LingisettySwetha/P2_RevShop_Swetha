@@ -7,6 +7,7 @@ import com.rev.app.exception.ResourceNotFoundException;
 import com.rev.app.repository.IPaymentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,7 +36,7 @@ class PaymentServiceImplTest {
         when(orderService.placeOrder(1L, "Address")).thenReturn(order);
 
         Order result = paymentService.checkoutWithPayment(
-                1L, "Address", "CARD", "4111111111111111", "12/30", "123");
+                1L, "Address", "CREDIT_CARD", "John Doe", "SBI Credit Card", "4111111111111111", "12/30", "123");
 
         assertEquals(1L, result.getOrderId());
         verify(paymentRepository).save(org.mockito.ArgumentMatchers.any(Payment.class));
@@ -45,7 +46,22 @@ class PaymentServiceImplTest {
     void testCheckoutWithPayment_InvalidCard() {
         assertThrows(InvalidRequestException.class, () ->
                 paymentService.checkoutWithPayment(
-                        1L, "Address", "CARD", "1234", "12/30", "123"));
+                        1L, "Address", "CREDIT_CARD", "John Doe", "SBI Credit Card", "1234", "12/30", "123"));
+    }
+
+    @Test
+    void testCheckoutWithPayment_CodSuccess() {
+        Order order = new Order();
+        order.setOrderId(2L);
+        when(orderService.placeOrder(1L, "Address")).thenReturn(order);
+
+        paymentService.checkoutWithPayment(
+                1L, "Address", "CASH_ON_DELIVERY", null, null, null, null, null);
+
+        ArgumentCaptor<Payment> captor = ArgumentCaptor.forClass(Payment.class);
+        verify(paymentRepository).save(captor.capture());
+        assertEquals("CASH_ON_DELIVERY", captor.getValue().getPaymentMethod());
+        assertEquals("PENDING", captor.getValue().getPaymentStatus());
     }
 
     @Test

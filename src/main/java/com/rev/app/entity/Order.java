@@ -18,8 +18,15 @@ public class Order {
     @JoinColumn(name="user_id")
     private User user;
 
+    @Column(name = "order_number", unique = true, nullable = false, length = 64)
+    private String orderNumber;
+
     private Double totalAmount;
-    private String orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
+
     private LocalDateTime orderDate;
 
     @Column(name = "shipping_address")
@@ -35,7 +42,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
-        this.orderStatus="PLACED";
+        this.orderStatus = OrderStatus.PLACED;
         this.orderDate=LocalDateTime.now();
     }
 
@@ -45,11 +52,14 @@ public class Order {
     public User getUser(){ return user; }
     public void setUser(User user){ this.user=user; }
 
+    public String getOrderNumber() { return orderNumber; }
+    public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
+
     public Double getTotalAmount(){ return totalAmount; }
     public void setTotalAmount(Double totalAmount){ this.totalAmount=totalAmount; }
 
-    public String getOrderStatus(){ return orderStatus; }
-    public void setOrderStatus(String orderStatus){ this.orderStatus=orderStatus; }
+    public OrderStatus getOrderStatus(){ return orderStatus; }
+    public void setOrderStatus(OrderStatus orderStatus){ this.orderStatus=orderStatus; }
 
     public LocalDateTime getOrderDate(){ return orderDate; }
 

@@ -2,6 +2,7 @@ package com.rev.app.controller;
 
 import com.rev.app.entity.Order;
 import com.rev.app.entity.OrderItem;
+import com.rev.app.entity.OrderStatus;
 import com.rev.app.exception.UnauthorizedException;
 import com.rev.app.service.IOrderService;
 
@@ -40,7 +41,7 @@ public class OrderController {
             throw new UnauthorizedException("Only buyers can place orders");
         }
 
-        orderService.placeOrder(userId, "Web Order (No Address Provided)");
+        orderService.placeOrder(userId, "Web Order");
         session.setAttribute("cartCount", 0);
 
         return "redirect:/orders/success";
@@ -70,8 +71,7 @@ public class OrderController {
         if (userId == null)
             return "redirect:/login";
 
-        List<Order> orders =
-                orderService.getOrdersByUser(userId);
+        List<Order> orders = orderService.getOrderHistory(userId);
 
         model.addAttribute("orders", orders);
 
@@ -90,12 +90,7 @@ public class OrderController {
         if (userId == null)
             return "redirect:/login";
 
-        Order order =
-                orderService.getOrderById(orderId);
-
-        if (!order.getUser().getUserId().equals(userId)) {
-            throw new UnauthorizedException("Access denied");
-        }
+        Order order = orderService.getOrderByIdForUser(orderId, userId);
 
         List<OrderItem> items =
                 orderService.getOrderItems(orderId);
@@ -116,25 +111,9 @@ public class OrderController {
         String role = (String) session.getAttribute("role");
         if (!"BUYER".equals(role)) throw new UnauthorizedException("Access denied");
 
-        Order order = orderService.getOrderById(orderId);
-        if (order.getUser().getUserId().equals(userId) && 
-           ("PLACED".equals(order.getOrderStatus()) || "PROCESSING".equals(order.getOrderStatus()))) {
-            orderService.updateOrderStatus(orderId, "CANCELLED");
-        }
-        return "redirect:/orders";
-    }
-
-    @PostMapping("/{orderId}/delete")
-    public String deleteOrder(@PathVariable Long orderId, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) return "redirect:/login";
-
-        String role = (String) session.getAttribute("role");
-        if (!"BUYER".equals(role)) throw new UnauthorizedException("Access denied");
-
-        Order order = orderService.getOrderById(orderId);
-        if (order.getUser().getUserId().equals(userId)) {
-            orderService.deleteOrder(orderId);
+        Order order = orderService.getOrderByIdForUser(orderId, userId);
+        if (order.getOrderStatus() == OrderStatus.PLACED || order.getOrderStatus() == OrderStatus.CONFIRMED) {
+            orderService.cancelOrder(orderId, userId);
         }
         return "redirect:/orders";
     }

@@ -27,6 +27,10 @@ class OrderServiceImplTest {
     private ICartRepository cartRepository;
     @Mock
     private ICartItemRepository cartItemRepository;
+    @Mock
+    private IOrderItemRepository orderItemRepository;
+    @Mock
+    private IProductRepository productRepository;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -46,5 +50,35 @@ class OrderServiceImplTest {
         
         Order found = orderService.getOrderById(1L);
         assertNotNull(found);
+    }
+
+    @Test
+    void testCancelOrder_ShippedNotAllowed() {
+        User user = new User();
+        user.setUserId(1L);
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderStatus(OrderStatus.SHIPPED);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        assertThrows(InvalidRequestException.class, () -> orderService.cancelOrder(1L, 1L));
+    }
+
+    @Test
+    void testCancelOrder_AllowedForPlaced() {
+        User user = new User();
+        user.setUserId(1L);
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderStatus(OrderStatus.PLACED);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order result = orderService.cancelOrder(1L, 1L);
+        assertEquals(OrderStatus.CANCELLED, result.getOrderStatus());
     }
 }

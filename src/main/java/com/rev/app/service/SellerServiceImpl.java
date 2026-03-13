@@ -70,7 +70,7 @@ public class SellerServiceImpl implements ISellerService {
         OrderItem item = orderItemRepository.findById(orderItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order item not found"));
         Order order = item.getOrder();
-        order.setOrderStatus("SHIPPED");
+        order.setOrderStatus(OrderStatus.SHIPPED);
         orderRepository.save(order);
     }
 
@@ -87,7 +87,7 @@ public class SellerServiceImpl implements ISellerService {
     }
 
     @Override
-    public void updateOrderStatus(Long orderId, String status) {
+    public void updateOrderStatus(Long orderId, OrderStatus status) {
         log.info("Updating order status for order ID: {} to {}", orderId, status);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));

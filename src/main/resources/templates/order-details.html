@@ -20,8 +20,30 @@
 <div class="container mt-5">
 
     <h2 class="text-center mb-4">
-        Order Details - #<span th:text="${orderId}"></span>
+        Order Details - <span th:text="${order.orderNumber != null ? order.orderNumber : orderId}"></span>
     </h2>
+
+    <div class="card shadow-sm mb-4" th:if="${order.payment != null}">
+        <div class="card-header">
+            <strong>Payment Details</strong>
+        </div>
+        <div class="card-body">
+            <div><strong>Method:</strong> <span th:text="${order.payment.paymentMethod}">CREDIT_CARD</span></div>
+            <div><strong>Status:</strong> <span th:text="${order.payment.paymentStatus}">PAID</span></div>
+            <div th:if="${order.payment.cardHolderName != null}">
+                <strong>Card Holder:</strong> <span th:text="${order.payment.cardHolderName}">John Doe</span>
+            </div>
+            <div th:if="${order.payment.cardType != null}">
+                <strong>Card Type:</strong> <span th:text="${order.payment.cardType}">SBI Credit Card</span>
+            </div>
+            <div th:if="${order.payment.maskedCardNumber != null}">
+                <strong>Card:</strong> <span th:text="${order.payment.maskedCardNumber}">**** **** **** 1111</span>
+            </div>
+            <div th:if="${order.payment.cardExpiry != null}">
+                <strong>Expiry:</strong> <span th:text="${order.payment.cardExpiry}">12/30</span>
+            </div>
+        </div>
+    </div>
 
     <table class="table table-bordered shadow">
 
@@ -48,7 +70,7 @@
 
             <td>
                 Rs
-                <span th:text="${item.price * item.quantity}"></span>
+                <span th:text="${item.subtotal != null ? item.subtotal : (item.price * item.quantity)}"></span>
             </td>
 
             <td>
