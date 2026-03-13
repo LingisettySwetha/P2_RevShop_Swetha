@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RevShop_P2</name>
 	<description>Rev Shop is a web based full stack application</description>
+	<packaging>war</packaging>
 	<url/>
 	<licenses>
 		<license/>

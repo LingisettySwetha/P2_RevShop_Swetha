@@ -40,6 +40,8 @@ public class PaymentRestController {
                 userId,
                 request.getAddress(),
                 request.getPaymentMethod(),
+                request.getCardHolderName(),
+                request.getCardType(),
                 request.getCardNumber(),
                 request.getExpiryDate(),
                 request.getCvv());
@@ -48,8 +50,10 @@ public class PaymentRestController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("orderId", order.getOrderId());
-        response.put("orderStatus", order.getOrderStatus());
-        response.put("paymentStatus", "PAID");
+        response.put("orderNumber", order.getOrderNumber());
+        response.put("orderStatus", order.getOrderStatus() != null ? order.getOrderStatus().name() : null);
+        response.put("paymentMethod", order.getPayment() != null ? order.getPayment().getPaymentMethod() : null);
+        response.put("paymentStatus", order.getPayment() != null ? order.getPayment().getPaymentStatus() : "PENDING");
         response.put("message", "Checkout completed");
         return response;
     }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import com.rev.app.entity.OrderStatus;
 import com.rev.app.exception.UnauthorizedException;
 import com.rev.app.service.IOrderService;
 
@@ -20,7 +21,7 @@ public class AdminOrderController {
 
     @PostMapping("/update-status")
     public String updateStatus(@RequestParam Long orderId,
-                               @RequestParam String status,
+                               @RequestParam OrderStatus status,
                                HttpSession session) {
         log.info("Admin: Updating order {} status to {}", orderId, status);
 

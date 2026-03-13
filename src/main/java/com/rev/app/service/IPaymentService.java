@@ -8,6 +8,8 @@ public interface IPaymentService {
     Order checkoutWithPayment(Long userId,
                               String address,
                               String paymentMethod,
+                              String cardHolderName,
+                              String cardType,
                               String cardNumber,
                               String expiryDate,
                               String cvv);

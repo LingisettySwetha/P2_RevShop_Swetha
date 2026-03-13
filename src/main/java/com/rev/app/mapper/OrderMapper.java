@@ -11,8 +11,9 @@ public class OrderMapper {
 
         OrderDTO dto=new OrderDTO();
         dto.setOrderId(order.getOrderId());
+        dto.setOrderNumber(order.getOrderNumber());
         dto.setTotalAmount(order.getTotalAmount());
-        dto.setOrderStatus(order.getOrderStatus());
+        dto.setOrderStatus(order.getOrderStatus() != null ? order.getOrderStatus().name() : null);
         dto.setOrderDate(order.getOrderDate());
 
         dto.setItems(
@@ -20,9 +21,12 @@ public class OrderMapper {
             .stream()
             .map(i->{
                 OrderItemDTO d=new OrderItemDTO();
+                d.setOrderItemId(i.getOrderItemId());
+                d.setProductId(i.getProduct().getProductId());
                 d.setProductName(i.getProduct().getName());
                 d.setQuantity(i.getQuantity());
                 d.setPrice(i.getPrice());
+                d.setSubtotal(i.getSubtotal());
                 return d;
             }).collect(Collectors.toList())
         );

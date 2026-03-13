@@ -2,6 +2,7 @@ package com.rev.app.controller;
 
 import com.rev.app.entity.Product;
 import com.rev.app.entity.OrderItem;
+import com.rev.app.entity.OrderStatus;
 import com.rev.app.entity.Seller;
 import com.rev.app.entity.User;
 import com.rev.app.repository.ISellerRepository;
@@ -76,13 +77,13 @@ public class SellerDashboardController {
 
         List<OrderItem> sellerOrders = sellerService.getSellerOrders(userId);
         long newOrderCount = sellerOrders.stream()
-                .filter(item -> "PLACED".equals(item.getOrder().getOrderStatus()))
+                .filter(item -> item.getOrder().getOrderStatus() == OrderStatus.PLACED)
                 .map(item -> item.getOrder().getOrderId())
                 .distinct()
                 .count();
         long pendingOrderCount = sellerOrders.stream()
-                .filter(item -> "PLACED".equals(item.getOrder().getOrderStatus())
-                        || "PROCESSING".equals(item.getOrder().getOrderStatus()))
+                .filter(item -> item.getOrder().getOrderStatus() == OrderStatus.PLACED
+                        || item.getOrder().getOrderStatus() == OrderStatus.CONFIRMED)
                 .map(item -> item.getOrder().getOrderId())
                 .distinct()
                 .count();
@@ -180,7 +181,7 @@ public class SellerDashboardController {
 
         List<OrderItem> sellerOrders = sellerService.getSellerOrders(userId);
         long newOrderCount = sellerOrders.stream()
-                .filter(item -> "PLACED".equals(item.getOrder().getOrderStatus()))
+                .filter(item -> item.getOrder().getOrderStatus() == OrderStatus.PLACED)
                 .map(item -> item.getOrder().getOrderId())
                 .distinct()
                 .count();
@@ -204,13 +205,13 @@ public class SellerDashboardController {
 
         List<OrderItem> sellerOrders = sellerService.getSellerOrders(userId);
         long newOrderCount = sellerOrders.stream()
-                .filter(item -> "PLACED".equals(item.getOrder().getOrderStatus()))
+                .filter(item -> item.getOrder().getOrderStatus() == OrderStatus.PLACED)
                 .map(item -> item.getOrder().getOrderId())
                 .distinct()
                 .count();
         long pendingOrderCount = sellerOrders.stream()
-                .filter(item -> "PLACED".equals(item.getOrder().getOrderStatus())
-                        || "PROCESSING".equals(item.getOrder().getOrderStatus()))
+                .filter(item -> item.getOrder().getOrderStatus() == OrderStatus.PLACED
+                        || item.getOrder().getOrderStatus() == OrderStatus.CONFIRMED)
                 .map(item -> item.getOrder().getOrderId())
                 .distinct()
                 .count();
@@ -229,7 +230,7 @@ public class SellerDashboardController {
     }
 
     @PostMapping("/orders/update-status")
-    public String updateOrderStatus(@RequestParam Long orderId, @RequestParam String status) {
+    public String updateOrderStatus(@RequestParam Long orderId, @RequestParam OrderStatus status) {
         sellerService.updateOrderStatus(orderId, status);
         return "redirect:/seller/orders";
     }

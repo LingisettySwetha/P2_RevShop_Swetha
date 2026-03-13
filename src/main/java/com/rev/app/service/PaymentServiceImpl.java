@@ -25,18 +25,28 @@ public class PaymentServiceImpl implements IPaymentService {
     public Order checkoutWithPayment(Long userId,
                                      String address,
                                      String paymentMethod,
+                                     String cardHolderName,
+                                     String cardType,
                                      String cardNumber,
                                      String expiryDate,
                                      String cvv) {
 
-        validateCheckoutInput(address, paymentMethod, cardNumber, expiryDate, cvv);
+        validateCheckoutInput(address, paymentMethod, cardHolderName, cardType, cardNumber, expiryDate, cvv);
 
         Order order = orderService.placeOrder(userId, address.trim());
 
+        String normalizedMethod = normalizeMethod(paymentMethod);
         Payment payment = new Payment();
         payment.setOrder(order);
-        payment.setPaymentMethod(normalizeMethod(paymentMethod));
-        payment.setPaymentStatus("PAID");
+        payment.setPaymentMethod(normalizedMethod);
+        payment.setPaymentStatus("CASH_ON_DELIVERY".equals(normalizedMethod) ? "PENDING" : "PAID");
+
+        if (isCardMethod(normalizedMethod)) {
+            payment.setCardHolderName(cardHolderName.trim());
+            payment.setCardType(cardType.trim());
+            payment.setMaskedCardNumber(maskCardNumber(cardNumber));
+            payment.setCardExpiry(expiryDate.replaceAll("\\s+", ""));
+        }
 
         order.setPayment(payment);
         paymentRepository.save(payment);
@@ -66,6 +76,8 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void validateCheckoutInput(String address,
                                        String paymentMethod,
+                                       String cardHolderName,
+                                       String cardType,
                                        String cardNumber,
                                        String expiryDate,
                                        String cvv) {
@@ -75,7 +87,21 @@ public class PaymentServiceImpl implements IPaymentService {
         if (paymentMethod == null || paymentMethod.isBlank()) {
             throw new InvalidRequestException("Payment method is required");
         }
-        if ("CARD".equalsIgnoreCase(paymentMethod)) {
+
+        String normalizedMethod = normalizeMethod(paymentMethod);
+        if (!"CREDIT_CARD".equals(normalizedMethod)
+                && !"DEBIT_CARD".equals(normalizedMethod)
+                && !"CASH_ON_DELIVERY".equals(normalizedMethod)) {
+            throw new InvalidRequestException("Unsupported payment method");
+        }
+
+        if (isCardMethod(normalizedMethod)) {
+            if (cardHolderName == null || cardHolderName.isBlank()) {
+                throw new InvalidRequestException("Card holder name is required");
+            }
+            if (cardType == null || cardType.isBlank()) {
+                throw new InvalidRequestException("Card type is required");
+            }
             if (cardNumber == null || !cardNumber.replaceAll("\\s+", "").matches("\\d{16}")) {
                 throw new InvalidRequestException("Card number must be 16 digits");
             }
@@ -90,9 +116,27 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private String normalizeMethod(String method) {
         String cleaned = method.trim().toUpperCase();
+        if ("CARD".equals(cleaned) || "CREDIT".equals(cleaned) || "CREDITCARD".equals(cleaned)) {
+            return "CREDIT_CARD";
+        }
+        if ("DEBIT".equals(cleaned) || "DEBITCARD".equals(cleaned)) {
+            return "DEBIT_CARD";
+        }
+        if ("COD".equals(cleaned) || "CASH ON DELIVERY".equals(cleaned)) {
+            return "CASH_ON_DELIVERY";
+        }
         if (cleaned.equals("VISA") || cleaned.equals("MASTER") || cleaned.equals("AMEX")) {
-            return "CARD";
+            return "CREDIT_CARD";
         }
         return cleaned;
+    }
+
+    private boolean isCardMethod(String paymentMethod) {
+        return "CREDIT_CARD".equals(paymentMethod) || "DEBIT_CARD".equals(paymentMethod);
+    }
+
+    private String maskCardNumber(String cardNumber) {
+        String digits = cardNumber.replaceAll("\\s+", "");
+        return "**** **** **** " + digits.substring(digits.length() - 4);
     }
 }

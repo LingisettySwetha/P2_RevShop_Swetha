@@ -6,6 +6,7 @@ import java.util.List;
 public class OrderDTO {
 
     private Long orderId;
+    private String orderNumber;
     private Double totalAmount;
     private String orderStatus;
     private LocalDateTime orderDate;
@@ -13,6 +14,9 @@ public class OrderDTO {
 
     public Long getOrderId(){ return orderId; }
     public void setOrderId(Long orderId){ this.orderId=orderId; }
+
+    public String getOrderNumber() { return orderNumber; }
+    public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
 
     public Double getTotalAmount(){ return totalAmount; }
     public void setTotalAmount(Double totalAmount){ this.totalAmount=totalAmount; }

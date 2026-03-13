@@ -50,6 +50,139 @@ public class DatabaseSchemaInitializer {
                     """;
             jdbcTemplate.execute(resetTokenTableSql);
             log.info("Ensured password_reset_tokens table exists");
+
+            String cardHolderNameColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE payments ADD card_holder_name VARCHAR2(100)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(cardHolderNameColumnSql);
+            log.info("Ensured payments.card_holder_name column exists");
+
+            String maskedCardNumberColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE payments ADD masked_card_number VARCHAR2(32)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(maskedCardNumberColumnSql);
+            log.info("Ensured payments.masked_card_number column exists");
+
+            String cardTypeColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE payments ADD card_type VARCHAR2(100)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(cardTypeColumnSql);
+            log.info("Ensured payments.card_type column exists");
+
+            String cardExpiryColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE payments ADD card_expiry VARCHAR2(8)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(cardExpiryColumnSql);
+            log.info("Ensured payments.card_expiry column exists");
+
+            String orderNumberColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE orders ADD order_number VARCHAR2(64)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(orderNumberColumnSql);
+            log.info("Ensured orders.order_number column exists");
+
+            String orderItemsSubtotalColumnSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE order_items ADD subtotal NUMBER(19,2)';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1430 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(orderItemsSubtotalColumnSql);
+            log.info("Ensured order_items.subtotal column exists");
+
+            String migrateProcessingStatusSql = """
+                    UPDATE orders
+                    SET order_status = 'CONFIRMED'
+                    WHERE order_status = 'PROCESSING'
+                    """;
+            jdbcTemplate.update(migrateProcessingStatusSql);
+            log.info("Migrated PROCESSING orders to CONFIRMED");
+
+            String backfillOrderNumberSql = """
+                    UPDATE orders
+                    SET order_number = 'RS-' ||
+                        TO_CHAR(NVL(order_date, SYSTIMESTAMP), 'YYYYMMDD') ||
+                        '-' || LPAD(order_id, 6, '0')
+                    WHERE order_number IS NULL
+                    """;
+            jdbcTemplate.update(backfillOrderNumberSql);
+            log.info("Backfilled orders.order_number for existing rows");
+
+            String backfillSubtotalSql = """
+                    UPDATE order_items
+                    SET subtotal = NVL(price, 0) * NVL(quantity, 0)
+                    WHERE subtotal IS NULL
+                    """;
+            jdbcTemplate.update(backfillSubtotalSql);
+            log.info("Backfilled order_items.subtotal for existing rows");
+
+            String orderNumberUniqueSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE '
+                            ALTER TABLE orders
+                            ADD CONSTRAINT uk_orders_order_number UNIQUE (order_number)
+                        ';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -955 AND SQLCODE != -2261 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(orderNumberUniqueSql);
+            log.info("Ensured unique constraint on orders.order_number exists");
+
+            String orderNumberNotNullSql = """
+                    BEGIN
+                        EXECUTE IMMEDIATE 'ALTER TABLE orders MODIFY order_number NOT NULL';
+                    EXCEPTION
+                        WHEN OTHERS THEN
+                            IF SQLCODE != -1442 THEN
+                                RAISE;
+                            END IF;
+                    END;
+                    """;
+            jdbcTemplate.execute(orderNumberNotNullSql);
+            log.info("Ensured orders.order_number is NOT NULL");
         };
     }
 }

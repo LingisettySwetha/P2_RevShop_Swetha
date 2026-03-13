@@ -15,5 +15,5 @@ public interface ISellerService {
 
     void updatePaymentStatus(Long orderId, String status);
 
-    void updateOrderStatus(Long orderId, String status);
+    void updateOrderStatus(Long orderId, OrderStatus status);
 }
